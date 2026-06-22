@@ -55,21 +55,24 @@ Before pushing, determine the remote relationship:
    git remote get-url upstream 2>/dev/null || echo "no upstream"
    ```
 
-4. **Check for self-hosted mirror:**
+4. **Detect self-hosted backup mirror:**
    ```bash
-   git remote get-url mirror 2>/dev/null || \
-   git remote get-url gitea 2>/dev/null || \
-   git remote get-url gitlab 2>/dev/null || echo "no mirror"
+   git remote -v | grep -vE '^(origin|upstream)\s' | \
+     grep -iE 'git\..*\.(com|org|net|io|dev)|gitea|gitlab|自建' || \
+     echo "no self-hosted mirror detected"
    ```
+   Any remote whose URL contains your own git server domain
+   (e.g. `git01.wrt.astra-lab.org`) is a backup mirror, regardless
+   of what it's named (`backup`, `gitea`, `myrepo`, etc.).
 
 ### Decision: Which sync strategy?
 
-| Remote topology | Identified by | Strategy |
-|:----------------|:--------------|:---------|
-| **Single remote** | Only `origin`, no others | §1 — Single Remote Push |
-| **Primary + backup mirror** | `origin` (GitHub) + `mirror`/`gitea` (self-hosted) | §2 — Dual Remote Push |
-| **Upstream + fork** | `upstream` (owner's repo) + `origin` (your fork) + no mirror | §2a — Fork Sync |
-| **Upstream + fork + backup** | All three: `upstream` + `origin` + `mirror`/`gitea` | §2a + §2 combined |
+| Remote topology | How to recognise | Strategy |
+|:----------------|:-----------------|:---------|
+| **Single remote** | Only `origin`, no other remotes | §1 — Single Remote Push |
+| **Primary + backup mirror** | `origin` (GitHub) + one or more other remotes pointing to self-hosted git | §2 — Dual Remote Push |
+| **Upstream + fork** | `upstream` (owner's repo) + `origin` (your fork) + no self-hosted mirror | §2a — Fork Sync |
+| **Upstream + fork + backup** | All three: `upstream` + `origin` + self-hosted mirror | §2a + §2 combined |
 
 ## 1. Single Remote Push (Standard)
 
