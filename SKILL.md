@@ -2,7 +2,6 @@
 name: astra-vcs-assist
 description: "VCS workflow orchestrator — GPG key management, Git init, commit workflow, release management, and cross-machine sync. Routes to VCS-specific sub-skills by task type."
 version: 1.0.0
-author: ANGELIA
 platforms: [linux]
 related_skills:
   - astra-vcs-assist-gpg-key
@@ -100,10 +99,7 @@ Git is the first supported VCS. Its sub-skills cover the full workflow:
 
 ## SOUL.md Alignment
 
-- **§3.2 Code discipline**: Conventional Commits, commit message discipline enforced by `git-dev` and `git-release`
-- **§3.3 Use version control actively**: Everything in this project is about version management discipline
-- **§x.x Credential management**: GPG keys managed by `gpg-key` sub-skill; repo credentials by `git-init`
-- **§x.x Dual backup / multi-remote**: Coverage in `git-sync`
+- **§3.3 Use version control actively** — this project is about disciplined version control; SOUL requires active use of version management for all project artefacts.
 
 ## Pitfalls
 
