@@ -62,7 +62,7 @@ Before pushing, determine the remote relationship:
      echo "no self-hosted mirror detected"
    ```
    Any remote whose URL contains your own git server domain
-   (e.g. `git01.wrt.astra-lab.org`) is a backup mirror, regardless
+   (e.g. `git.example.org`, `git.mycompany.com`) is a backup mirror, regardless
    of what it's named (`backup`, `gitea`, `myrepo`, etc.).
 
 ### Decision: Which sync strategy?
@@ -149,7 +149,7 @@ git pull            # or re-clone if history diverged
 ### 2a. Fork Sync (Upstream + Your Fork)
 
 When you track an upstream repo and maintain your own fork (e.g.
-`jo-inc/camofox-browser` upstream → `alrcatraz/astra-camofox-browser` fork):
+`jo-inc/camofox-browser` upstream → `your-username/astra-camofox-browser` fork):
 
 ```bash
 # Remotes
@@ -352,7 +352,7 @@ For a single push without config changes:
 ```bash
 TOKEN=$(gpg ... --decrypt ... 2>/dev/null | head -1)
 GIT_TERMINAL_PROMPT=0 \
-  git -c credential.helper="!f() { echo username=alrcatraz; echo password=$TOKEN; }; f" \
+  git -c credential.helper="!f() { echo username=user; echo password=$TOKEN; }; f" \
   push origin main
 ```
 

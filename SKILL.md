@@ -114,6 +114,6 @@ Git is the first supported VCS. Its sub-skills cover the full workflow:
 
 4. **Shared scripts stay at root `scripts/`.** GPG-related scripts live in `scripts/` (not `gpg/scripts/`), because they're VCS-agnostic. Git-specific scripts live in `git/scripts/`.
 
-5. **`automated-gpg-commit-push` is the predecessor.** That skill (devops category) contains HomeCentre01-specific HomeCentre01-specific credential tricks. Its generic GPG knowledge has been absorbed into `astra-vcs-assist-gpg-key`. If you're on HomeCentre01, load both — the old skill has machine-specific debugging notes.
+5. **`automated-gpg-commit-push` is the predecessor.** That skill (devops category) contains machine-specific credential tricks. Its generic GPG knowledge has been absorbed into `astra-vcs-assist-gpg-key`. On that machine, load both — the old skill has machine-specific debugging notes.
 
 6. **Credentials in GPG, never in skill text.** Password decryption always goes through `gpg --pinentry-mode loopback` or `gpg-preset-passphrase`. Never hardcode.

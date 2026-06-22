@@ -37,7 +37,7 @@ A typical output shows:
 sec   ed25519 2026-01-15 [SC] [expires: 2028-01-15]
       ABA1ABA2ABA3ABA4ABA5ABA6ABA7ABA8ABA9ABAA
       Keygrip = 1111222233334444555566667777888899990000
-uid           [ultimate] Alrcatraz <alrcatraz@gmx.com>
+uid           [ultimate] User Name <user@example.com>
 ssb   cv25519 2026-01-15 [E] [expires: 2028-01-15]
       Keygrip = BBBBCCCCDDDDEEEEFFFF00001111222233334444
 ```
