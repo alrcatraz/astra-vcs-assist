@@ -13,9 +13,9 @@ platforms: [linux]
 Load this sub-skill when:
 
 - Checking what GPG keys are available on the current machine
-- Importing GPG keys from backup (USB, NAS, password manager)
+- Importing GPG keys from backup
 - Generating a new GPG key for code signing
-- Configuring git (or other VCS) to use a specific signing key
+- Configuring VCS to use a specific signing key
 - Rotating or revoking an existing signing key
 - Setting up GPG on a new machine
 - Troubleshooting "gpg failed to sign the data" errors

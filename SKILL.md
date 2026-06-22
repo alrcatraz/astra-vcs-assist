@@ -57,14 +57,16 @@ astra-vcs-assist (orchestrator)
 
 ## Sub-Skill Routing
 
-| Task type | When to load | Delegates to |
-|:----------|:-------------|:-------------|
-| GPG key check / import / generate / rotate | User mentions GPG keys, signing, or encryption setup | `astra-vcs-assist-gpg-key` |
-| New repo bootstrap (README, LICENSE, .gitignore, gitconfig) | User says "init repo", "start a new project", or "bootstrap" | `astra-vcs-assist-git-init` |
-| Daily git workflow (branch, stage, commit during dev) | User says "working on feature X", "commit this", or mid-development state | `astra-vcs-assist-git-dev` |
-| End-of-phase commit prep (squash, split, reword, tag) | User says "clean up commits", "prepare release", "squash before merge", "tag version" | `astra-vcs-assist-git-release` |
-| Push, dual remote, bundle transfer | User says "push", "sync to remote", "transfer commits" | `astra-vcs-assist-git-sync` |
-| CI/CD, PR management | User mentions GitHub Actions, PR review, CI pipeline | `astra-vcs-assist-git-ci` (planned) |
+The definitive routing table is in `routing.yaml` (machine- and human-readable).
+Below is a summary for quick reference:
+
+| Task type | Delegate to |
+|:----------|:------------|
+| GPG key management (check, import, generate, rotate) | `skill_view(name='astra-vcs-assist-gpg-key')` |
+| Repository init (README, LICENSE, gitconfig, GPG binding) | `skill_view(name='astra-vcs-assist-git-init')` |
+| Daily dev workflow (branch, stage, commit, stash) | `skill_view(name='astra-vcs-assist-git-dev')` |
+| Release prep (squash, split, reword, tag, changelog) | `skill_view(name='astra-vcs-assist-git-release')` |
+| Push, sync, transfer (dual remote, force push, bundle) | `skill_view(name='astra-vcs-assist-git-sync')` |
 
 ### Loading a Sub-Skill
 

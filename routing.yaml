@@ -1,0 +1,127 @@
+# ══════════════════════════════════════════════════════════════
+# astra-vcs-assist — Routing Table
+# ══════════════════════════════════════════════════════════════
+#
+# Machine-readable (scripts/sync-routing.py writes this) AND
+# human-readable (SKILL.md instructs the agent to read this).
+#
+# When adding new routable sub-skills:
+#   1. Add a new entry under `routing:`
+#   2. The `skills:` list points to the Hermes skill name(s) to load
+#   3. `indicators:` lists semantic hints for agent classification
+#
+# Convention:
+#   - skill: Hermes skill name as loaded via skill_view(name)
+#   - indicators: semantic hints for agent classification
+
+version: 1
+
+routing:
+
+  # ── GPG Key Management ───────────────────────────────────
+  - type: gpg-key-management
+    label: "GPG key management"
+    indicators:
+      - gpg key
+      - signing key
+      - import key
+      - generate key
+      - rotate key
+      - gpg setup
+      - gpg failed to sign
+      - gpg-agent
+      - passphrase cache
+      - keygrip
+      - gpg-preset-passphrase
+    skills:
+      - name: astra-vcs-assist-gpg-key
+    principles: "Check existing keys first. Never hardcode passphrases. See gpg-key-lifecycle.md for algorithm choices."
+
+  # ── Repository Init ───────────────────────────────────────
+  - type: vcs-init
+    label: "Repository initialisation"
+    indicators:
+      - init repo
+      - new repository
+      - bootstrap project
+      - create project
+      - start new project
+      - initialise
+      - first commit
+      - git init
+      - add licence
+      - choose licence
+      - gitignore
+      - git config
+      - credential helper
+      - remote setup
+      - add remote
+    skills:
+      - name: astra-vcs-assist-git-init
+    principles: "Per-repo identity (not global). Verify GPG email match. LICENSE file must be standard text (no preamble)."
+
+  # ── Daily Development Workflow ────────────────────────────
+  - type: vcs-dev
+    label: "Daily development workflow"
+    indicators:
+      - commit
+      - stage
+      - git add
+      - stash
+      - branch
+      - merge
+      - rebase
+      - working on feature
+      - in development
+      - git status
+      - git diff
+      - partial stage
+      - git add -p
+      - wip
+    skills:
+      - name: astra-vcs-assist-git-dev
+    principles: "One logical change per commit. Separate tasks, separate commits. `git pull --rebase` by default. Use `git add -p` for partial staging."
+
+  # ── Release / Commit Cleanup ──────────────────────────────
+  - type: vcs-release
+    label: "Release & commit cleanup"
+    indicators:
+      - squash
+      - rebase interactive
+      - cleanup commits
+      - tidy history
+      - prepare release
+      - tag version
+      - semantic version
+      - changelog
+      - commit message
+      - reword
+      - split commit
+      - amend
+      - fixup
+      - version bump
+    skills:
+      - name: astra-vcs-assist-git-release
+    principles: "Never rebase pushed commits without force-push consent. Verify SemVer bump type before tagging."
+
+  # ── Push / Sync / Transfer ────────────────────────────────
+  - type: vcs-sync
+    label: "Remote synchronisation"
+    indicators:
+      - push
+      - force push
+      - force-with-lease
+      - dual remote
+      - mirror
+      - git bundle
+      - cross-machine
+      - transfer commits
+      - push to remote
+      - credential
+      - pull
+      - sync
+      - push failed
+      - rejected push
+    skills:
+      - name: astra-vcs-assist-git-sync
+    principles: "Always `git fetch` before `--force-with-lease`. Tags are immutable once pushed. `GIT_TERMINAL_PROMPT=0` for headless pushes."
