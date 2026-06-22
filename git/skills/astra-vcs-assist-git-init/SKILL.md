@@ -43,7 +43,35 @@ Before touching git, clarify:
 
 ## 2. Licence Selection
 
-### Quick decision matrix
+Licence selection is a **three-step workflow**:
+
+```
+Analyse project context  →  Recommend licence  →  User decides  →  Execute
+   │                             │                      │
+   └── Check Fact Store /        └── Present 1–2        └── User confirms
+       memory for preferences        candidates with        → Ready to
+       & the existing                  rationale               implement
+       project pattern
+```
+
+### Step 1 — Analyse
+
+Before recommending, check:
+
+1. **Fact Store** (`fact_store(action='search', query='license')`) — any stored
+   preference about licences the user has stated before
+2. **Project purpose** — is it code? Documentation? Tutorial? Mixed?
+3. **Existing ecosystem pattern** — do the user's other similar projects use
+   a consistent licence?
+4. **Public or private?** — public projects need explicit licence; private can
+   be "All rights reserved"
+
+### Step 2 — Recommend
+
+Present 1–2 candidates with rationale. Reference the matrix below for
+comparison. Let the user decide before touching any file.
+
+### Decision matrix (for reference during analysis)
 
 | Want this? | Choose this | Notes |
 |:-----------|:------------|:------|
