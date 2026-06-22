@@ -120,16 +120,51 @@ Expected: `MIT`, `CC-BY-SA-4.0`, `Apache-2.0`, etc. If `NOASSERTION`, the licenc
 
 ## 3. README
 
-### Standard sections
+### Badge bar (classic four)
+
+The README header should carry these four badges — they're the first thing
+visitors see and communicate project health at a glance:
 
 ```markdown
-# Project Name
-
-> One-line description of what this project does.
-
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/owner/repo)](https://github.com/owner/repo)
 [![GitHub last commit](https://img.shields.io/github/last-commit/owner/repo)](https://github.com/owner/repo)
+[![Star history](https://api.star-history.com/svg?repos=owner/repo&type=Date)](https://star-history.com/#owner/repo&Date)
+```
 
+| Badge | Service | Meaning |
+|:------|:--------|:--------|
+| License | `shields.io` | Licence type, colour-coded |
+| Stars | `shields.io` | Popularity indicator |
+| Last commit | `shields.io` | Active maintenance signal |
+| Star history | `star-history.com` | Growth trend over time |
+
+Replace `owner/repo` with the actual GitHub repository path.
+
+### Sponsor badge (conditional)
+
+Before writing, check Fact Store for any sponsor link the user has recorded:
+
+```
+fact_store(action='search', query='sponsor OR funding OR donate')
+```
+
+- **If found** → ask the user: "I found a sponsor link. Should I include it?"
+- **If not found** → skip the sponsor badge. Do not fabricate one.
+
+If the user confirms a sponsor link, add it to the badge bar:
+
+```markdown
+[![Sponsor](https://img.shields.io/badge/sponsor-❤️-red.svg)](<sponsor-url>)
+```
+
+### Standard sections
+
+After the badge bar, the README body follows a conventional structure:
+
+#### README template
+
+````markdown
 ## Description
 
 A paragraph explaining the project's purpose, audience, and key differentiators.
@@ -155,9 +190,9 @@ Link to CONTRIBUTING.md or brief guidelines.
 ## Licence
 
 [Licence name] — see [LICENCE](LICENSE).
-```
+````
 
-### Bilingual README (for international projects)
+#### Bilingual README (for international projects)
 
 Use a `README.md` with main content in one language and a summary in another at the bottom:
 
