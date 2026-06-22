@@ -330,6 +330,75 @@ git add -p
 git commit -m "feat: single clean commit"
 ```
 
+## 8. Merge to Main vs Open a Pull Request
+
+After commits are cleaned up, the final step depends on
+whether you own the target repository:
+
+### Own repo → merge to main
+
+```bash
+# Ensure you're on the feature branch with clean commits
+git checkout feature-branch
+
+# Switch to main and merge
+git checkout main
+git merge feature-branch
+
+# Or squash-merge (single commit on main)
+git merge --squash feature-branch
+git commit -m "feat: add user authentication (#42)"
+
+# Tag and push
+git tag v1.2.0
+git push origin main --tags
+
+# Delete the feature branch (local and remote)
+git branch -d feature-branch
+git push origin :feature-branch
+```
+
+### Fork → pull request to upstream
+
+```bash
+# Push the cleaned-up feature branch to your fork
+git push -u origin feature-branch
+
+# Create a pull request via GitHub API (no gh CLI)
+BRANCH=$(git branch --show-current)
+OWNER_REPO=$(git remote get-url origin | \
+  sed -E 's|.*github\.com[:/]||; s|\.git$||')
+OWNER=$(echo "$OWNER_REPO" | cut -d/ -f1)
+REPO=$(echo "$OWNER_REPO" | cut -d/ -f2)
+
+curl -s -X POST \
+  -H "Authorization: token $GITHUB_TOKEN" \
+  https://api.github.com/repos/$OWNER/$REPO/pulls \
+  -d "{
+    \"title\": \"feat: short description\",
+    \"body\": \"## Summary\\n\\nWhat this PR does and why.\\n\\nCloses #issue\",
+    \"head\": \"$BRANCH\",
+    \"base\": \"main\"
+  }"
+
+# Or if the PR targets an upstream repo (not your fork):
+#   head = \"$OWNER:$BRANCH\"
+#   base = \"main\"
+#   (the PR is opened against the upstream repo)
+```
+
+### Decision guide
+
+| Scenario | Action |
+|:---------|:-------|
+| Your own project, single maintainer | Merge to main, delete feature branch |
+| Your own project, multiple contributors | Merge via PR (even for your own code) for audit trail |
+| Fork of someone else's project | Push feature branch → open PR to upstream |
+| Experimental / throwaway branch | Delete without merging |
+
+After merging or submitting the PR, proceed to `astra-vcs-assist-git-sync`
+if you need to push to multiple remotes or transfer commits.
+
 ## Pitfalls
 
 1. **Never rebase pushed commits** unless you're prepared to force-push. Rebasing changes commit SHAs. If others have the old history, they'll need to rebase too.
