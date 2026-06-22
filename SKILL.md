@@ -79,23 +79,25 @@ Or let Hermes' auto-scan match the trigger keywords.
 
 ## VCS Domains
 
-### Git (Phase 1)
+### GPG Signing & Encryption
+
+GPG key management is VCS-agnostic — the same key signs Git commits,
+Mercurial changesets, or email. This domain covers the full lifecycle:
+
+| Sub-skill | Covers | Status |
+|:----------|:-------|:------:|
+| `astra-vcs-assist-gpg-key` | Key check/import/generate, VCS signing config, headless passphrase caching, cross-machine key strategy, rotation | ✅ Phase 1 |
+
+### Git
 
 Git is the first supported VCS. Its sub-skills cover the full workflow:
 
-| Phase | Sub-skill | Covers | Status |
-|:------|:----------|:-------|:------:|
-| Setup | `astra-vcs-assist-git-init` | README, LICENSE, .gitignore, gitconfig, GPG binding | ✅ Phase 1 |
-| Daily | `astra-vcs-assist-git-dev` | Branch, stage, commit, stash, merge/rebase during development | ✅ Phase 2 |
-| Release | `astra-vcs-assist-git-release` | Commit reorganisation, message writing, tagging, changelog | ✅ Phase 2 |
-| Sync | `astra-vcs-assist-git-sync` | Push, force push, dual remote, git bundle | ✅ Phase 2 |
-
-### Planned Domains
-
-| VCS | Status | Notes |
-|:----|:-------|:------|
-| Mercurial | 🔮 Future | If needed |
-| Fossil | 🔮 Future | If needed |
+| Phase | Sub-skill | Covers |
+|:------|:----------|:-------|
+| Setup | `astra-vcs-assist-git-init` | README, LICENSE, .gitignore, gitconfig, GPG binding |
+| Daily | `astra-vcs-assist-git-dev` | Branch, stage, commit, stash, merge/rebase during development |
+| Release | `astra-vcs-assist-git-release` | Commit reorganisation, message writing, tagging, changelog |
+| Sync | `astra-vcs-assist-git-sync` | Push, force push, dual remote, git bundle |
 
 ## SOUL.md Alignment
 
