@@ -2,7 +2,7 @@
 name: astra-vcs-assist-git-sync
 description: "Git remote synchronisation — single and dual-remote push, safe force push with --force-with-lease, credential injection strategies, and git bundle for cross-machine transfer."
 version: 1.0.0
-author: ANGELIA
+author: alrcatraz
 platforms: [linux]
 ---
 

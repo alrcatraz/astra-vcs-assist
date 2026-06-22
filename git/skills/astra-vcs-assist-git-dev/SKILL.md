@@ -2,7 +2,7 @@
 name: astra-vcs-assist-git-dev
 description: "Daily Git workflow during active development — branch management, staging strategies, commit discipline, stash, rebase vs merge decisions, and pre-push verification."
 version: 1.0.0
-author: ANGELIA
+author: alrcatraz
 platforms: [linux]
 ---
 

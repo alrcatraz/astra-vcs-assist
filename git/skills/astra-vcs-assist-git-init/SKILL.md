@@ -2,7 +2,7 @@
 name: astra-vcs-assist-git-init
 description: "Git repository bootstrap — project initialisation, README conventions, licence selection and analysis, gitignore strategy, per-repo identity, GPG binding, remote setup, and first commit."
 version: 1.0.0
-author: ANGELIA
+author: alrcatraz
 platforms: [linux]
 ---
 
