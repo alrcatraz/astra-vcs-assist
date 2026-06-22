@@ -143,14 +143,14 @@ Replace `owner/repo` with the actual GitHub repository path.
 
 ### Sponsor badge (conditional)
 
-Before writing, check Fact Store for any sponsor link the user has recorded:
+Search Fact Store for sponsor information:
 
 ```
 fact_store(action='search', query='sponsor OR funding OR donate')
 ```
 
-- **If found** → ask the user: "I found a sponsor link. Should I include it?"
-- **If not found** → skip the sponsor badge. Do not fabricate one.
+- **Result found** → ask the user: "Should I include a sponsor badge?"
+- **No result** → skip. Do not fabricate or prompt about it.
 
 If the user confirms a sponsor link, add it to the badge bar:
 
