@@ -314,9 +314,10 @@ git diff main..HEAD --stat
 #    (see SemVer table above — is it PATCH, MINOR, or MAJOR?)
 
 # 6. Write or update the changelog
-
-# 7. Tag
-git tag v1.2.0
+#
+# 7. Tag (only for own repos — forks skip this)
+#    Confirm with user: "Ready to tag vX.Y.Z?"
+#    git tag v1.2.0
 ```
 
 ### If something is wrong, don't push yet
@@ -337,6 +338,8 @@ whether you own the target repository:
 
 ### Own repo → merge to main
 
+After cleanup, **ask the user** whether to tag before pushing:
+
 ```bash
 # Ensure you're on the feature branch with clean commits
 git checkout feature-branch
@@ -349,8 +352,10 @@ git merge feature-branch
 git merge --squash feature-branch
 git commit -m "feat: add user authentication (#42)"
 
-# Tag and push
+# Tag — only if user confirms ("Ready to tag vX.Y.Z?")
 git tag v1.2.0
+
+# Push
 git push origin main --tags
 
 # Delete the feature branch (local and remote)
@@ -359,6 +364,8 @@ git push origin :feature-branch
 ```
 
 ### Fork → pull request to upstream
+
+No tagging — forks can't push tags to the upstream repo. Submit PR instead:
 
 ```bash
 # Push the cleaned-up feature branch to your fork
@@ -389,12 +396,12 @@ curl -s -X POST \
 
 ### Decision guide
 
-| Scenario | Action |
-|:---------|:-------|
-| Your own project, single maintainer | Merge to main, delete feature branch |
-| Your own project, multiple contributors | Merge via PR (even for your own code) for audit trail |
-| Fork of someone else's project | Push feature branch → open PR to upstream |
-| Experimental / throwaway branch | Delete without merging |
+| Scenario | Action | Tag? |
+|:---------|:-------|:----:|
+| Your own project, single maintainer | Merge to main, delete feature branch | ✅ Ask user |
+| Your own project, multiple contributors | Merge via PR for audit trail | ✅ Ask user |
+| Fork of someone else's project | Push feature branch → open PR to upstream | ❌ Skip |
+| Experimental / throwaway branch | Delete without merging | ❌ Skip |
 
 After merging or submitting the PR, proceed to `astra-vcs-assist-git-sync`
 if you need to push to multiple remotes or transfer commits.
