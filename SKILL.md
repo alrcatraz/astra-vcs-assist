@@ -2,6 +2,7 @@
 name: astra-vcs-assist
 description: "VCS workflow orchestrator — GPG key management, Git init, commit workflow, release management, and cross-machine sync. Routes to VCS-specific sub-skills by task type."
 version: 1.0.0
+author: alrcatraz
 platforms: [linux]
 related_skills:
   - astra-vcs-assist-gpg-key
