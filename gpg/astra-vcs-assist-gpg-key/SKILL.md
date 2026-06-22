@@ -86,8 +86,8 @@ Key-Usage: sign
 Subkey-Type: ecdh
 Subkey-Curve: cv25519
 Subkey-Usage: encrypt
-Name-Real: Alrcatraz
-Name-Email: alrcatraz@gmx.com
+Name-Real: User Name
+Name-Email: user@example.com
 Expire-Date: 2y
 Passphrase: <supply securely>
 EOF
