@@ -34,6 +34,43 @@ Local commits
   └── Cross-machine    →  git bundle → transfer → pull
 ```
 
+## 0. Analyse Remote Topology (Do This First)
+
+Before pushing, determine the remote relationship:
+
+1. **Check existing remotes:**
+   ```bash
+   git remote -v
+   ```
+
+2. **Check remote ownership:**
+   ```bash
+   git remote get-url origin
+   ```
+   - Does the URL contain your own GitHub/Gitea account? → you own this repo
+   - Does it point to someone else's account? → this is a fork
+
+3. **Check for upstream:**
+   ```bash
+   git remote get-url upstream 2>/dev/null || echo "no upstream"
+   ```
+
+4. **Check for self-hosted mirror:**
+   ```bash
+   git remote get-url mirror 2>/dev/null || \
+   git remote get-url gitea 2>/dev/null || \
+   git remote get-url gitlab 2>/dev/null || echo "no mirror"
+   ```
+
+### Decision: Which sync strategy?
+
+| Remote topology | Identified by | Strategy |
+|:----------------|:--------------|:---------|
+| **Single remote** | Only `origin`, no others | §1 — Single Remote Push |
+| **Primary + backup mirror** | `origin` (GitHub) + `mirror`/`gitea` (self-hosted) | §2 — Dual Remote Push |
+| **Upstream + fork** | `upstream` (owner's repo) + `origin` (your fork) + no mirror | §2a — Fork Sync |
+| **Upstream + fork + backup** | All three: `upstream` + `origin` + `mirror`/`gitea` | §2a + §2 combined |
+
 ## 1. Single Remote Push (Standard)
 
 ### Normal push
@@ -104,6 +141,55 @@ git push origin --tags
 # On the machine hosting the mirror:
 cd /path/to/repo
 git pull            # or re-clone if history diverged
+```
+
+### 2a. Fork Sync (Upstream + Your Fork)
+
+When you track an upstream repo and maintain your own fork (e.g.
+`jo-inc/camofox-browser` upstream → `alrcatraz/astra-camofox-browser` fork):
+
+```bash
+# Remotes
+git remote add upstream https://github.com/upstream-owner/repo.git  # read-only
+git remote rename origin github                                      # your fork (push)
+# Or keep as origin (your fork):
+# git remote add upstream https://github.com/upstream-owner/repo.git
+```
+
+**Daily sync from upstream:**
+
+```bash
+# Fetch upstream changes
+git fetch upstream
+
+# Update your main branch
+git checkout main
+git rebase upstream/main          # or: git merge upstream/main
+
+# Push updated main to your fork
+git push origin main
+
+# Now rebase your feature branch on top
+git checkout feat/my-feature
+git rebase main
+```
+
+**Pushing your changes:**
+
+```bash
+# Push feature branch to your fork
+git push -u origin feat/my-feature
+
+# Open a PR to upstream (see git-release §8)
+```
+
+**Dual push (fork + backup):**
+
+```bash
+# If you also have a self-hosted mirror:
+git remote add gitea https://git.example.com/your-username/repo.git
+git push origin main
+git push gitea main
 ```
 
 ## 3. Safe Force Push
