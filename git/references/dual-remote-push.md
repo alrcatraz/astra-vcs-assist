@@ -52,25 +52,8 @@ from the mirror too, keep separate remotes.
 
 ## Fork Workflow
 
-When you've forked a repo from `upstream`:
-
-```bash
-# Named remotes
-git remote add upstream https://github.com/original-owner/repo.git  # read-only
-git remote add origin https://github.com/your-username/repo.git      # your fork (push)
-
-# Sync from upstream
-git fetch upstream
-git checkout main
-git merge upstream/main          # or: git rebase upstream/main
-
-# Push to your fork
-git push origin main
-
-# Optional: also push to a self-hosted mirror
-git remote add gitea https://git.example.com/your-username/repo.git
-git push gitea main
-```
+Fork sync workflow is now covered in `astra-vcs-assist-git-sync` §2a (Fork Sync).
+This reference covers the mirror/backup aspect only.
 
 ## Daily Workflow
 
