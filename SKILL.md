@@ -84,9 +84,9 @@ Or let Hermes' auto-scan match the trigger keywords.
 GPG key management is VCS-agnostic — the same key signs Git commits,
 Mercurial changesets, or email. This domain covers the full lifecycle:
 
-| Sub-skill | Covers | Status |
-|:----------|:-------|:------:|
-| `astra-vcs-assist-gpg-key` | Key check/import/generate, VCS signing config, headless passphrase caching, cross-machine key strategy, rotation | ✅ Phase 1 |
+| Sub-skill | Covers |
+|:----------|:-------|
+| `astra-vcs-assist-gpg-key` | Key check/import/generate, VCS signing config, headless passphrase caching, cross-machine key strategy, rotation |
 
 ### Git
 
@@ -99,7 +99,7 @@ Git is the first supported VCS. Its sub-skills cover the full workflow:
 | Release | `astra-vcs-assist-git-release` | Commit reorganisation, message writing, tagging, changelog |
 | Sync | `astra-vcs-assist-git-sync` | Push, force push, dual remote, git bundle |
 
-## SOUL.md Alignment
+## SOUL Alignment
 
 - **§3.3 活用版本管理** — This project is about disciplined version control; SOUL requires active use of version management for all project artefacts.
 
