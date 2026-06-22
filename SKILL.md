@@ -64,6 +64,7 @@ astra-vcs-assist (orchestrator)
 | Daily git workflow (branch, stage, commit during dev) | User says "working on feature X", "commit this", or mid-development state | `astra-vcs-assist-git-dev` |
 | End-of-phase commit prep (squash, split, reword, tag) | User says "clean up commits", "prepare release", "squash before merge", "tag version" | `astra-vcs-assist-git-release` |
 | Push, dual remote, bundle transfer | User says "push", "sync to remote", "transfer commits" | `astra-vcs-assist-git-sync` |
+| CI/CD, PR management | User mentions GitHub Actions, PR review, CI pipeline | `astra-vcs-assist-git-ci` (planned) |
 
 ### Loading a Sub-Skill
 
@@ -81,12 +82,12 @@ Or let Hermes' auto-scan match the trigger keywords.
 
 Git is the first supported VCS. Its sub-skills cover the full workflow:
 
-| Phase | Sub-skill | Covers |
-|:------|:----------|:-------|
-| Setup | `astra-vcs-assist-git-init` | README, LICENSE, .gitignore, gitconfig, GPG binding |
-| Daily | `astra-vcs-assist-git-dev` | Branch, stage, commit, stash, merge/rebase during development |
-| Release | `astra-vcs-assist-git-release` | Commit reorganisation, message writing, tagging, changelog |
-| Sync | `astra-vcs-assist-git-sync` | Push, force push, dual remote, git bundle |
+| Phase | Sub-skill | Covers | Status |
+|:------|:----------|:-------|:------:|
+| Setup | `astra-vcs-assist-git-init` | README, LICENSE, .gitignore, gitconfig, GPG binding | ✅ Phase 1 |
+| Daily | `astra-vcs-assist-git-dev` | Branch, stage, commit, stash, merge/rebase during development | ✅ Phase 2 |
+| Release | `astra-vcs-assist-git-release` | Commit reorganisation, message writing, tagging, changelog | ✅ Phase 2 |
+| Sync | `astra-vcs-assist-git-sync` | Push, force push, dual remote, git bundle | ✅ Phase 2 |
 
 ### Planned Domains
 
