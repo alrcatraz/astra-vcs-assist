@@ -13,3 +13,5 @@ Thumbs.db
 
 # Private config overrides
 config/devices.yaml
+
+.codegraph/
