@@ -4,6 +4,30 @@ description: "End-of-phase commit preparation — interactive rebase for squash,
 version: 1.0.0
 author: alrcatraz
 platforms: [linux]
+tags: [commit-cleanup, git-rebase, semver, changelog, git-tag, pr-checklist, release]
+related_skills:
+  - astra-vcs-assist-git-init
+  - astra-vcs-assist-git-dev
+  - astra-vcs-assist-git-sync
+  - astra-vcs-assist-gpg-key
+tools:
+  - git
+triggers:
+  - commit cleanup
+  - interactive rebase
+  - squash commit
+  - split commit
+  - reword commit message
+  - semantic version
+  - semver
+  - create tag
+  - release preparation
+  - changelog
+  - PR checklist
+  - pull request preparation
+  - merge branch
+  - pre-release checklist
+  - commit history review
 ---
 
 # astra-vcs-assist-git-release — Commit Cleanup & Release Management

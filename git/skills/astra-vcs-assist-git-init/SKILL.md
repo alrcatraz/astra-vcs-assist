@@ -4,6 +4,29 @@ description: "Git repository bootstrap — project initialisation, README conven
 version: 1.0.0
 author: alrcatraz
 platforms: [linux]
+tags: [repository-init, git-bootstrap, README, LICENSE, gitignore, GPG]
+related_skills:
+  - astra-vcs-assist-git-release
+  - astra-vcs-assist-gpg-key
+tools:
+  - git
+  - gpg
+  - curl
+triggers:
+  - initialise repository
+  - initialise repo
+  - repository bootstrap
+  - git init
+  - new project setup
+  - choose licence
+  - setup git config
+  - gpg signing setup
+  - first commit
+  - repo skeleton
+  - project documentation
+  - README conventions
+  - AGENTS.md
+  - CONTRIBUTING.md
 ---
 
 # astra-vcs-assist-git-init — Repository Bootstrap
