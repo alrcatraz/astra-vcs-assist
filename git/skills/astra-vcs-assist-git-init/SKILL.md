@@ -29,6 +29,109 @@ Set up gitconfig → Bind GPG key → Create .gitignore →
 Set remote → First commit
 ```
 
+## Project Documentation Standards
+
+A well-documented repository communicates its purpose, audience, and health
+at a glance. Which documents are needed depends on the project's maturity
+and audience.
+
+### Documentation Tiers
+
+| Tier | Required files | When |
+|:-----|:---------------|:-----|
+| **1 — Minimum** | `README.md` + `LICENSE` + `.gitignore` | Every public repository. README explains what and why; LICENSE protects users and you; .gitignore prevents accidental secret commits. |
+| **2 — Standard** | Tier 1 + `AGENTS.md` + `CONTRIBUTING.md` | Hermes ecosystem components add AGENTS.md so agent tools can operate them autonomously. Add CONTRIBUTING.md when you expect or want external contributions. |
+| **3 — Full** | Tier 2 + `CHANGELOG.md` | Mature, multi-release projects. CHANGELOG documents what changed between releases for downstream consumers. |
+
+**Plan files** (PLAN.md, DESIGN.md, ROADMAP.md) are developer workspace
+documents, not project documentation. They do not belong in any tier.
+Keep them in a `docs/plan/` directory or don't commit them at all.
+
+### Repository Skeleton (Standard)
+
+```
+project/
+├── README.md                 ← Tier 1: project identity + quick start
+├── LICENSE                   ← Tier 1: always MIT or chosen licence
+├── .gitignore                ← Tier 1: language + IDE + env patterns
+├── AGENTS.md                 ← Tier 2 (Hermes components): agent operation guide
+├── CONTRIBUTING.md           ← Tier 2 (optional): how to contribute
+├── CHANGELOG.md              ← Tier 3 (optional): release notes
+├── pyproject.toml            ← Python projects
+├── config/
+│   └── settings.yaml.example ← Example config, never real secrets
+├── scripts/                  ← Tool scripts
+└── tests/                    ← Test suite
+```
+
+### AGENTS.md (for Hermes Ecosystem Components)
+
+An AGENTS.md file tells an AI agent how to operate this component:
+
+- Start with a one-line summary and ecosystem link
+- Document entry points — CLI commands, MCP tools, run scripts
+- List environment variables the agent should know about
+- Include a **Dependencies** section with runtime requirements and
+  cross-repo ecosystem references
+- Include common workflow patterns
+
+AGENTS.md is machine-readable, not primarily human-facing. Write in
+English, be precise, include concrete command examples.
+
+```markdown
+# component-name — Agent Guide
+
+## Entry Points
+
+| Action | Command |
+|:-------|:--------|
+| Run server | `uv run server.py` |
+| Run tests | `uv run pytest tests/` |
+
+## Dependencies
+
+- **Runtime:** Python 3.11+
+- **Ecosystem:** [sibling-component](...) for shared database
+```
+
+### CONTRIBUTING.md
+
+Keep it short. Cover:
+
+- How to set up a development environment
+- How to run tests (`pytest tests/ -q`)
+- Commit convention (Conventional Commits — see `astra-vcs-assist-git-release`)
+- PR process (branch from develop, PR to main)
+- Code style (linked to project's `.editorconfig`)
+
+```markdown
+# Contributing
+
+## Development Setup
+```bash
+git clone <repo>
+cd <repo>
+uv sync
+```
+
+## Before Submitting
+
+1. Run tests: `pytest tests/ -q`
+2. Run lint: `graphlint query --warn-types unused_import,dead_code`
+3. Follow commit conventions: `type(scope): description`
+```
+
+### Language Convention
+
+- **Default language: British English** (-ise, -our, -re, -ence) for all
+  published content — README, AGENTS.md, docs, code comments.
+- **Identifier naming in the code itself** follows standard per-language
+  conventions (US English spelling — e.g. `initialize` not `initialise`).
+- **Bilingual README:** English body + `---` + Chinese summary at the
+  bottom, for projects with a Chinese-speaking audience.
+
+---
+
 ## 1. Repository Planning
 
 Before touching git, clarify:
