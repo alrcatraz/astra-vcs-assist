@@ -291,6 +291,71 @@ git log --oneline --format="%s" v1.1.0..HEAD | \
   sed -E 's/^(refactor):/\n### Changed\n-/'
 ```
 
+### Keep a Changelog Format
+
+Follow [keepachangelog.com](https://keepachangelog.com) conventions:
+
+```markdown
+# Changelog
+
+All notable changes to this project are documented here.
+Format follows [Keep a Changelog](https://keepachangelog.com).
+
+## [v1.2.0] — 2026-07-23
+
+### Added
+- New feature description (#42)
+
+### Changed
+- Behaviour change in existing feature (#38)
+
+### Deprecated
+- Feature that will be removed in next major version
+
+### Removed
+- Feature removed in this release
+
+### Fixed
+- Bug fix description (#40)
+
+### Security
+- Vulnerability fix
+
+[Unreleased]: https://github.com/owner/repo/compare/v1.2.0...HEAD
+[v1.2.0]: https://github.com/owner/repo/compare/v1.1.0...v1.2.0
+```
+
+Keep the `[Unreleased]` link at the bottom so the section is always
+ready for the next release's additions.
+
+---
+
+## PR Preparation Checklist
+
+Before opening or merging a pull request, verify these items:
+
+1. **Stop after coding** — once development work is functionally complete,
+   STOP. Do NOT commit or PR without user confirmation.
+2. **User confirmation** — present the work to the user. Let them confirm
+   everything is correct.
+3. **User identity** — confirm whose name/email should be on the commits.
+   Set per-repo git identity.
+4. **Commit only after approval** — organise commits only after explicit
+   user go-ahead.
+5. **Submit PR only after second approval** — wait for a second explicit
+   approval before opening a PR. No self-authorised submissions.
+6. **Review commit history** — squash intermediate corrections, split
+   logical concerns.
+7. **Update README** — must reflect the PR's changes before opening.
+8. **Reset local main if needed:** `git checkout main && git reset --hard <remote>/main`
+9. **No "Phase X" labels** in commit messages.
+10. **Private data audit** — check for device names, IPs, passwords in
+    committed files.
+11. **Run graphlint** — `graphlint query --warn-types unused_import,dead_code`
+    to catch dead code and unused imports before declaring done.
+
+---
+
 ## 7. Pre-Release Verification Checklist
 
 Before tagging and pushing a release:
