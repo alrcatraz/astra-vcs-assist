@@ -108,12 +108,40 @@ Git is the first supported VCS. Its sub-skills cover the full workflow:
 
 1. **Resist scope creep.** The hub's job is routing, not implementing GPG or Git logic. If you find yourself writing signing procedures inside the hub SKILL.md, that content belongs in `astra-vcs-assist-gpg-key`.
 
-2. **Sub-skills inside the repo, not separate repos.** Unlike some Astra projects, sub-skills are stored inside this repo (under `gpg/` or `git/skills/`) and symlinked out. Edit them via their real path, not via `skill_manage`.
+2. **Sub-skills inside the repo, not separate repos.** Unlike some Astra projects, sub-skills are stored inside this repo (under `gpg/` or `git/skills/`) and symlinked out.
 
-3. **New VCS domains get their own directory.** Adding Mercurial support means creating `hg/` at the top level — not stuffing it into `git/`.
+3. **Skill-edit sync gap — critical.** This repo is symlinked into `~/.hermes/skills/vcs/astra-vcs-assist` from a canonical location (either `~/Projects/astra/astra-vcs-assist/` or `~/.astra/repos/astra-vcs-assist/`). When you use `skill_manage` to patch a skill during a session, the write lands in the symlink target — **not** in `~/Projects/astra/`. The two can diverge silently.
 
-4. **Shared scripts stay at root `scripts/`.** GPG-related scripts live in `scripts/` (not `gpg/scripts/`), because they're VCS-agnostic. Git-specific scripts live in `git/scripts/`.
+   **After every `skill_manage` action** (patch, edit, write_file) on any skill in this group, do:
 
-5. **`automated-gpg-commit-push` is the predecessor.** That skill (devops category) contains machine-specific credential tricks. Its generic GPG knowledge has been absorbed into `astra-vcs-assist-gpg-key`. On that machine, load both — the old skill has machine-specific debugging notes.
+   ```bash
+   # 1. Check if canonical repo has unpushed commits the symlink target doesn't
+   cd ~/.astra/repos/astra-vcs-assist
+   git fetch dev
+   git log --oneline dev/main..main   # commits only in .astra/repos?
 
-6. **Credentials in GPG, never in skill text.** Password decryption always goes through `gpg --pinentry-mode loopback` or `gpg-preset-passphrase`. Never hardcode.
+   # 2. If ahead, push back
+   git push dev main
+
+   # 3. Verify the canonical repo now has your edit
+   cd ~/Projects/astra/astra-vcs-assist
+   git log --oneline -3
+   ```
+
+   If `~/Projects/astra/` itself has unpushed commits not yet in `.astra/repos/`, pull them first:
+
+   ```bash
+   cd ~/.astra/repos/astra-vcs-assist
+   git fetch dev
+   git rebase dev/main
+   ```
+
+   Skipping this step is the #1 cause of "I fixed that last session but the skill hasn't changed" confusion.
+
+4. **New VCS domains get their own directory.** Adding Mercurial support means creating `hg/` at the top level — not stuffing it into `git/`.
+
+5. **Shared scripts stay at root `scripts/`.** GPG-related scripts live in `scripts/` (not `gpg/scripts/`), because they're VCS-agnostic. Git-specific scripts live in `git/scripts/`.
+
+6. **`automated-gpg-commit-push` is the predecessor.** That skill (devops category) contains machine-specific credential tricks. Its generic GPG knowledge has been absorbed into `astra-vcs-assist-gpg-key`. On that machine, load both — the old skill has machine-specific debugging notes.
+
+7. **Credentials in GPG, never in skill text.** Password decryption always goes through `gpg --pinentry-mode loopback` or `gpg-preset-passphrase`. Never hardcode.
