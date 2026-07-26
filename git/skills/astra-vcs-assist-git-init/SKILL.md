@@ -1,32 +1,9 @@
 ---
 name: astra-vcs-assist-git-init
-description: "Git repository bootstrap — project initialisation, README conventions, licence selection and analysis, gitignore strategy, per-repo identity, GPG binding, remote setup, and first commit."
+description: "Git repository bootstrap — project initialisation, README conventions, licence selection and analysis, gitignore strategy, per-repo identity, GPG binding, remote setup, documentation strategy, and first commit."
 version: 1.0.0
 author: alrcatraz
 platforms: [linux]
-tags: [repository-init, git-bootstrap, README, LICENSE, gitignore, GPG]
-related_skills:
-  - astra-vcs-assist-git-release
-  - astra-vcs-assist-gpg-key
-tools:
-  - git
-  - gpg
-  - curl
-triggers:
-  - initialise repository
-  - initialise repo
-  - repository bootstrap
-  - git init
-  - new project setup
-  - choose licence
-  - setup git config
-  - gpg signing setup
-  - first commit
-  - repo skeleton
-  - project documentation
-  - README conventions
-  - AGENTS.md
-  - CONTRIBUTING.md
 ---
 
 # astra-vcs-assist-git-init — Repository Bootstrap
@@ -41,6 +18,7 @@ Load this sub-skill when:
 - Unsure which licence to choose for a new project
 - Configuring remote (origin) and credential helpers
 - Making the very first commit of a project
+- Need to decide what documentation approach fits the project type
 
 ## Overview
 
@@ -49,111 +27,9 @@ A well-initialised repository is the foundation of disciplined version control. 
 ```text
 Plan repo purpose → Pick licence → Write README →
 Set up gitconfig → Bind GPG key → Create .gitignore →
-Set remote → First commit
+Set remote → Determine documentation strategy →
+First commit
 ```
-
-## Project Documentation Standards
-
-A well-documented repository communicates its purpose, audience, and health
-at a glance. Which documents are needed depends on the project's maturity
-and audience.
-
-### Documentation Tiers
-
-| Tier | Required files | When |
-|:-----|:---------------|:-----|
-| **1 — Minimum** | `README.md` + `LICENSE` + `.gitignore` | Every public repository. README explains what and why; LICENSE protects users and you; .gitignore prevents accidental secret commits. |
-| **2 — Standard** | Tier 1 + `AGENTS.md` + `CONTRIBUTING.md` | Hermes ecosystem components add AGENTS.md so agent tools can operate them autonomously. Add CONTRIBUTING.md when you expect or want external contributions. |
-| **3 — Full** | Tier 2 + `CHANGELOG.md` | Mature, multi-release projects. CHANGELOG documents what changed between releases for downstream consumers. |
-
-**Plan files** (PLAN.md, DESIGN.md, ROADMAP.md) are developer workspace
-documents, not project documentation. They do not belong in any tier.
-Keep them in a `docs/plan/` directory or don't commit them at all.
-
-### Repository Skeleton (Standard)
-
-```
-project/
-├── README.md                 ← Tier 1: project identity + quick start
-├── LICENSE                   ← Tier 1: always MIT or chosen licence
-├── .gitignore                ← Tier 1: language + IDE + env patterns
-├── AGENTS.md                 ← Tier 2 (Hermes components): agent operation guide
-├── CONTRIBUTING.md           ← Tier 2 (optional): how to contribute
-├── CHANGELOG.md              ← Tier 3 (optional): release notes
-├── pyproject.toml            ← Python projects
-├── config/
-│   └── settings.yaml.example ← Example config, never real secrets
-├── scripts/                  ← Tool scripts
-└── tests/                    ← Test suite
-```
-
-### AGENTS.md (for Hermes Ecosystem Components)
-
-An AGENTS.md file tells an AI agent how to operate this component:
-
-- Start with a one-line summary and ecosystem link
-- Document entry points — CLI commands, MCP tools, run scripts
-- List environment variables the agent should know about
-- Include a **Dependencies** section with runtime requirements and
-  cross-repo ecosystem references
-- Include common workflow patterns
-
-AGENTS.md is machine-readable, not primarily human-facing. Write in
-English, be precise, include concrete command examples.
-
-```markdown
-# component-name — Agent Guide
-
-## Entry Points
-
-| Action | Command |
-|:-------|:--------|
-| Run server | `uv run server.py` |
-| Run tests | `uv run pytest tests/` |
-
-## Dependencies
-
-- **Runtime:** Python 3.11+
-- **Ecosystem:** [sibling-component](...) for shared database
-```
-
-### CONTRIBUTING.md
-
-Keep it short. Cover:
-
-- How to set up a development environment
-- How to run tests (`pytest tests/ -q`)
-- Commit convention (Conventional Commits — see `astra-vcs-assist-git-release`)
-- PR process (branch from develop, PR to main)
-- Code style (linked to project's `.editorconfig`)
-
-```markdown
-# Contributing
-
-## Development Setup
-```bash
-git clone <repo>
-cd <repo>
-uv sync
-```
-
-## Before Submitting
-
-1. Run tests: `pytest tests/ -q`
-2. Run lint: `graphlint query --warn-types unused_import,dead_code`
-3. Follow commit conventions: `type(scope): description`
-```
-
-### Language Convention
-
-- **Default language: British English** (-ise, -our, -re, -ence) for all
-  published content — README, AGENTS.md, docs, code comments.
-- **Identifier naming in the code itself** follows standard per-language
-  conventions (US English spelling — e.g. `initialize` not `initialise`).
-- **Bilingual README:** English body + `---` + Chinese summary at the
-  bottom, for projects with a Chinese-speaking audience.
-
----
 
 ## 1. Repository Planning
 
@@ -450,7 +326,101 @@ git push -u mirror main
 
 See `astra-vcs-assist-git-sync` for dual-remote push workflow.
 
-## 8. First Commit
+## 8. Determine Documentation Strategy
+
+### First principle: README is mandatory, everything else is optional
+
+**Every project must have a `README.md`** — it's the front page, the first
+thing visitors see. The README should be concise and scannable: what the
+project is, quick start, badges, and pointers to detailed docs.
+
+GitHub Wiki, MkDocs, and `docs/` folders are **additional layers** for when
+the README can't (or shouldn't) cover everything.
+
+### README vs Wiki vs MkDocs — what each is for
+
+| Layer | Purpose | Content | When to use |
+|:------|:--------|:--------|:------------|
+| **README.md** | Front door, first impression | What/Why, quick start, badges, links | **Every project — mandatory** |
+| **GitHub/Gitea Wiki** | Reference library, detailed docs | Install guide, config reference, API, FAQ, troubleshooting | Code/tool projects where README isn't enough |
+| **MkDocs Material** | Polished standalone doc site | Tutorials, multi-page guides, versioned docs | Tutorials, projects needing a proper site |
+| **docs/ folder** | Docs versioned with code | API refs, changelogs, architecture docs | Projects where docs change in lockstep with code |
+| **AGENTS.md** | AI agent instructions (Hermes) | How an AI agent should interact with this project | Hermes ecosystem components (see note below) |
+
+> **Note on AGENTS.md:** This is a Hermes convention, not a GitHub feature.
+> It tells AI agents how to operate the project — entry points, environment
+> variables, common workflows. It is NOT a substitute for human-facing docs.
+>
+> - Code/tool projects in the Hermes ecosystem (astra-\*): should have both
+>   README (human) + AGENTS.md (agent)
+> - Projects NOT in the Hermes ecosystem: AGENTS.md is optional
+
+### Decision tree
+
+```text
+1. Does this project have a README.md yet?
+   └─ No → Write one. This is not optional.
+
+2. Does the README cover everything the user needs?
+   ├─ Yes → Stop here. No additional docs needed.
+   └─ No → Continue to step 3.
+
+3. What type of project is this?
+   ├─ Code / tool / library
+   │  ├─ Needs detailed reference docs (config, API, FAQ)?
+   │  │  ├─ Yes → GitHub/Gitea Wiki (reference library)
+   │  │  │         Keep README as the concise entry point,
+   │  │  │         link to Wiki for details
+   │  │  └─ No → README + inline comments is enough
+   │  └─ Has auto-documented API surface? → also consider
+   │       MkDocs + mkdocstrings (alongside or instead of Wiki)
+   ├─ Tutorial / guide
+   │  └─ → MkDocs Material (standalone site)
+   │         Wiki is NOT suitable (no navigation, no search)
+   ├─ Creative writing / worldbuilding
+   │  └─ → Obsidian vault (authoring) + MkDocs (publishing)
+   └─ Simple / one-pager
+      └─ → README-only is fine
+```
+
+### What each layer should contain
+
+**README.md** (the gateaway — concise, scannable):
+
+```
+- Title + one-liner description
+- Badge bar (license, stars, last commit)
+- Quick start (install + hello world, 3 lines max)
+- Basic usage example
+- Link to Wiki/MkDocs for full docs
+- Link to contributing guide (if applicable)
+- License note
+```
+
+**GitHub Wiki** (the reference — detailed, structured):
+
+```
+- Home — project overview and navigation
+- Installation — full setup guide, prerequisites, dependencies
+- Configuration — all options, env vars, examples
+- Usage — detailed examples, common patterns
+- Architecture — how it works, code map
+- API Reference — endpoints, functions, parameters
+- Troubleshooting — common issues and fixes
+- FAQ — frequently asked questions
+```
+
+### Projects that do NOT need a Wiki
+
+- **Tutorials** — use MkDocs instead (Wiki has no navigation/search)
+- **Creative writing / worldbuilding** — use Obsidian + MkDocs
+- **Simple one-pagers** — README is enough
+- **Meta-repos** (portal/governance repos) — README + docs/ is enough
+
+See `references/project-documentation-strategy.md` for detailed setup
+instructions per approach.
+
+## 9. First Commit
 
 ```bash
 git add .
@@ -463,7 +433,7 @@ basic git configuration."
 git push -u origin main
 ```
 
-### First commit conventions
+### First commit conventions (from section 9)
 
 | Type | When to use |
 |:-----|:------------|
