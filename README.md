@@ -11,6 +11,8 @@
 [![GitHub last commit](https://badgen.net/github/last-commit/alrcatraz/astra-vcs-assist)](https://github.com/alrcatraz/astra-vcs-assist/commits)
 [![Sponsor](https://img.shields.io/github/sponsors/alrcatraz?label=Sponsor&logo=github&color=ea4aaa&logoColor=white)](https://github.com/sponsors/alrcatraz)
 
+> **Version:** [`VERSION`](VERSION)  · **Branches:** `main` (Gitea, personal) + `public` (GitHub, official)
+
 </div>
 
 ---
@@ -31,6 +33,10 @@ Hermes' discovery path for automatic loading.
 ```
 astra-vcs-assist (orchestrator)
   │
+  ├── github/
+  │   └── astra-vcs-assist-github     GitHub platform ops
+  ├── gitea/
+  │   └── astra-vcs-assist-gitea      Gitea platform ops
   ├── gpg/
   │   └── astra-vcs-assist-gpg-key       GPG key lifecycle
   │
@@ -42,6 +48,51 @@ astra-vcs-assist (orchestrator)
   │
   └── hg/  (future)
 ```
+
+## Three-Layer Versioning
+
+This repository supports a versioning scheme for managing local modifications
+on top of an upstream baseline, whether you use the skills directly or maintain
+a personal fork.
+
+### Two-tier: Agent-only
+
+When you use the upstream skills as-is and only an AI agent applies local
+adjustments:
+
+```
+Official:  1.0.0                        (upstream baseline)
+Agent:     1.0.0+<agent-name>.1         (agent-specific modifications)
+```
+
+### Three-tier: with self-hosted fork
+
+When you maintain a personal fork (e.g. on a self-hosted Git instance such as
+Gitea) with custom configuration, then clone to individual agent machines:
+
+```
+Official:  1.0.0                        (upstream, e.g. GitHub)
+Personal:  1.0.0+<owner>.1              (fork with personal config)
+Agent:     1.0.0+<owner>.1.<agent>.1    (agent-specific on top of personal)
+```
+
+### Rules
+
+- Each layer's version segment increments independently as its content changes
+- Use `+` build metadata (SemVer 2.0 §10) to express the inclusion chain — it
+  carries documentation but does not affect version comparison
+- Version strings go in the `version:` field of each skill's YAML frontmatter
+  and in the project root `VERSION` file
+- When publishing to a higher (cleaner) layer, strip the lower-layer suffixes
+
+**This instance** (`git01.wrt.astra-lab.org`) uses:
+
+| Layer | Name | Version Example |
+|:------|:-----|:----------------|
+| Personal | `alrcatraz` (human operator) | `1.0.0+alrcatraz.Z` |
+| Agent | Hermes Agent name (e.g. `angelia`) | `1.0.0+alrcatraz.Z.angelia.Z` |
+
+Each segment (`alrcatraz`, agent name) carries a 1–3 digit version (`Z`), incremented independently when that layer's content changes.
 
 ## Sub-skills
 
@@ -146,6 +197,10 @@ astra-vcs-assist/
 ```
 astra-vcs-assist（编排器）
   │
+  ├── github/
+  │   └── astra-vcs-assist-github     GitHub 平台操作
+  ├── gitea/
+  │   └── astra-vcs-assist-gitea      Gitea 平台操作
   ├── gpg/
   │   └── astra-vcs-assist-gpg-key       GPG 密钥生命周期
   │
@@ -157,6 +212,45 @@ astra-vcs-assist（编排器）
   │
   └── hg/  (未来)
 ```
+
+## 三层版本号
+
+本仓库支持一套版本号方案，用于在上游基线之上管理本地修改——无论你是直接使用上游技能，还是维护个人 fork。
+
+### 两层：仅有 Agent
+
+如果直接使用上游技能，仅由 AI agent 做本地调整：
+
+```
+官方版：  1.0.0                        （上游基线）
+Agent 版：1.0.0+<agent-name>.1         （agent 特定修改）
+```
+
+### 三层：有自托管 fork
+
+如果维护了个人 fork（例如自托管的 Gitea），包含个人配置，再克隆到各个 agent 机器：
+
+```
+官方版：  1.0.0                        （上游，如 GitHub）
+个人版：  1.0.0+<owner>.1              （fork，含个人配置）
+Agent 版：1.0.0+<owner>.1.<agent>.1    （在个人版之上叠加 agent 信息）
+```
+
+### 规则
+
+- 各层版本段独立递增
+- 使用 `+` build 元数据（SemVer 2.0 §10）表达继承链——不影响版本比较，仅作文档用途
+- 版本号记录在每个技能的 YAML frontmatter `version:` 字段和仓库根目录的 `VERSION` 文件
+- 向更高（更干净）的层发布时，去掉下层的后缀
+
+本实例（`git01.wrt.astra-lab.org`）的命名规则：
+
+| 层 | 标识符 | 版本号示例 |
+|:---|:-------|:-----------|
+| 个人版 | `alrcatraz`（人工操作员） | `1.0.0+alrcatraz.Z` |
+| Agent 版 | Hermes Agent 名称（如 `angelia`） | `1.0.0+alrcatraz.Z.angelia.Z` |
+
+各段（`alrcatraz`、agent 名称）独立递增其版本号。详见 [`VERSION`](VERSION)。
 
 ## 子技能
 
