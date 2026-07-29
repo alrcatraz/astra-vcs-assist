@@ -11,7 +11,7 @@
 [![GitHub last commit](https://badgen.net/github/last-commit/alrcatraz/astra-vcs-assist)](https://github.com/alrcatraz/astra-vcs-assist/commits)
 [![Sponsor](https://img.shields.io/github/sponsors/alrcatraz?label=Sponsor&logo=github&color=ea4aaa&logoColor=white)](https://github.com/sponsors/alrcatraz)
 
-> **Version:** [`VERSION`](VERSION)  · **Branches:** `main` (Gitea, personal) + `public` (GitHub, official)
+> **Version:** [`VERSION`](VERSION)  · **Branch:** `public` (official release)
 
 </div>
 
@@ -35,8 +35,6 @@ astra-vcs-assist (orchestrator)
   │
   ├── github/
   │   └── astra-vcs-assist-github     GitHub platform ops
-  ├── gitea/
-  │   └── astra-vcs-assist-gitea      Gitea platform ops
   ├── gpg/
   │   └── astra-vcs-assist-gpg-key       GPG key lifecycle
   │
@@ -84,15 +82,6 @@ Agent:     1.0.0+<owner>.1.<agent>.1    (agent-specific on top of personal)
 - Version strings go in the `version:` field of each skill's YAML frontmatter
   and in the project root `VERSION` file
 - When publishing to a higher (cleaner) layer, strip the lower-layer suffixes
-
-**This instance** (`git01.wrt.astra-lab.org`) uses:
-
-| Layer | Name | Version Example |
-|:------|:-----|:----------------|
-| Personal | `alrcatraz` (human operator) | `1.0.0+alrcatraz.Z` |
-| Agent | Hermes Agent name (e.g. `angelia`) | `1.0.0+alrcatraz.Z.angelia.Z` |
-
-Each segment (`alrcatraz`, agent name) carries a 1–3 digit version (`Z`), incremented independently when that layer's content changes.
 
 ## Sub-skills
 
@@ -199,8 +188,6 @@ astra-vcs-assist（编排器）
   │
   ├── github/
   │   └── astra-vcs-assist-github     GitHub 平台操作
-  ├── gitea/
-  │   └── astra-vcs-assist-gitea      Gitea 平台操作
   ├── gpg/
   │   └── astra-vcs-assist-gpg-key       GPG 密钥生命周期
   │
@@ -242,15 +229,6 @@ Agent 版：1.0.0+<owner>.1.<agent>.1    （在个人版之上叠加 agent 信�
 - 使用 `+` build 元数据（SemVer 2.0 §10）表达继承链——不影响版本比较，仅作文档用途
 - 版本号记录在每个技能的 YAML frontmatter `version:` 字段和仓库根目录的 `VERSION` 文件
 - 向更高（更干净）的层发布时，去掉下层的后缀
-
-本实例（`git01.wrt.astra-lab.org`）的命名规则：
-
-| 层 | 标识符 | 版本号示例 |
-|:---|:-------|:-----------|
-| 个人版 | `alrcatraz`（人工操作员） | `1.0.0+alrcatraz.Z` |
-| Agent 版 | Hermes Agent 名称（如 `angelia`） | `1.0.0+alrcatraz.Z.angelia.Z` |
-
-各段（`alrcatraz`、agent 名称）独立递增其版本号。详见 [`VERSION`](VERSION)。
 
 ## 子技能
 
