@@ -125,3 +125,21 @@ routing:
     skills:
       - name: astra-vcs-assist-git-sync
     principles: "Always `git fetch` before `--force-with-lease`. Tags are immutable once pushed. `GIT_TERMINAL_PROMPT=0` for headless pushes."
+
+  # ── Fork / Upstream Adaptation ─────────────────────────────
+  - type: vcs-fork
+    label: "Fork & upstream adaptation"
+    indicators:
+      - fork
+      - upstream
+      - fork upstream
+      - fork adaptation
+      - copyright handling
+      - fork licensing
+      - open source fork
+      - fork readme
+      - astra fork
+      - dual remote
+    skills:
+      - name: astra-vcs-assist-git-fork
+    principles: "Keep upstream remote. Never push upstream branches. Copyright: append, never replace. Split infra changes from content changes."
