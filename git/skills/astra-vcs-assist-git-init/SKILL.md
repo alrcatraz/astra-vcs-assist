@@ -70,20 +70,9 @@ Before recommending, check:
 
 ### Step 2 — Recommend
 
-Present 1–2 candidates with rationale. Reference the matrix below for
-comparison. Let the user decide before touching any file.
-
-### Decision matrix (for reference during analysis)
-
-| Want this? | Choose this | Notes |
-|:-----------|:------------|:------|
-| Maximum adoption, permissive | **MIT** | Short, simple, lets anyone do anything. Industry standard for tools and libraries |
-| Share alike, copyleft | **GPL-3.0** | Derivative works must also be GPL. Use for projects where you want to enforce openness |
-| Weak copyleft (libraries) | **LGPL-3.0** | Can be linked from proprietary code without forcing GPL on the whole program |
-| Patents protection | **Apache-2.0** | Like MIT but with an express patent grant. Used by Google, Android, Kubernetes |
-| Documentation only | **CC BY-SA 4.0** | Creative Commons for docs. Note: GitHub recognises `CC-BY-SA-4.0` only if the LICENSE file is the standard text (no preamble) |
-| Dual licence | **MIT + CC BY-SA 4.0** | Code under MIT, documentation under CC BY-SA. Common for tutorial projects. Keep in `LICENSE` + `LICENSE.DUAL.md` |
-| No licence | **All rights reserved** | Default. Others cannot copy, modify, or distribute. Deliberate choice for private projects |
+Present 1–2 candidates with rationale. Use the reference at
+`skill_view('astra-vcs-assist-git-init', file_path='references/license-guide.md')`
+for the decision matrix, fork copyright handling, and GitHub detection pitfalls.
 
 ### Practical steps
 
