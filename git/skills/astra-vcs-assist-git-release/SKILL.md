@@ -1,7 +1,7 @@
 ---
 name: astra-vcs-assist-git-release
 description: "End-of-phase commit preparation — interactive rebase for squash, split, reword, and reorder; semantic version tagging; changelog generation; and pre-release verification."
-version: 1.0.0
+version: 1.2.0
 author: alrcatraz
 platforms: [linux]
 tags: [commit-cleanup, git-rebase, semver, changelog, git-tag, pr-checklist, release]
