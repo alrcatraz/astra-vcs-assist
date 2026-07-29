@@ -11,7 +11,7 @@
 [![GitHub last commit](https://badgen.net/github/last-commit/alrcatraz/astra-vcs-assist)](https://github.com/alrcatraz/astra-vcs-assist/commits)
 [![Sponsor](https://img.shields.io/github/sponsors/alrcatraz?label=Sponsor&logo=github&color=ea4aaa&logoColor=white)](https://github.com/sponsors/alrcatraz)
 
-> **Version:** [`VERSION`](VERSION)  · **Branch:** `public` (official release)
+> **Version:** [`VERSION`](VERSION)
 
 </div>
 
