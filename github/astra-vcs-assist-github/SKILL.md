@@ -1,7 +1,7 @@
 ---
 name: astra-vcs-assist-github
 description: "GitHub platform operations — authentication, issues, pull requests, releases, CI/CD, secrets, and repository management via the GitHub API."
-version: 1.2.0
+version: 1.3.0
 author: alrcatraz
 platforms: [linux]
 ---
