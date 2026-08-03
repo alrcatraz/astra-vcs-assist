@@ -1,7 +1,7 @@
 ---
 name: astra-vcs-assist-gpg-key
 description: "GPG key lifecycle management — check existing keys, import from backup, generate new keys, configure for VCS signing, key rotation, and cross-machine distribution."
-version: 1.2.0
+version: 1.3.0
 author: alrcatraz
 platforms: [linux]
 ---

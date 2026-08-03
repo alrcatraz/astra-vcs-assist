@@ -1,7 +1,7 @@
 ---
 name: astra-vcs-assist-git-fork
 description: "Fork and adapt upstream open-source projects — dual-remote setup, branch strategy, copyright handling, README adaptation, and upstream sync."
-version: 1.0.0
+version: 1.3.0
 author: alrcatraz
 platforms: [linux]
 metadata:
