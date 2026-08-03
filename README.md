@@ -89,8 +89,8 @@ Agent:     1.0.0+<owner>.1.<agent>.1    (agent-specific on top of personal)
 
 | Layer | Name | Version Example |
 |:------|:-----|:----------------|
-| Personal | `alrcatraz` (human operator) | `1.2.0+alrcatraz.1.0.0` |
-| Agent | Hermes Agent name (e.g. `angelia`) | `1.2.0+alrcatraz.1.0.0.angelia.0.0.0` |
+| Personal | `alrcatraz` (human operator) | `1.3.0+alrcatraz.1.0.0` |
+| Agent | Hermes Agent name (e.g. `angelia`) | `1.3.0+alrcatraz.1.0.0.angelia.0.0.0` |
 
 Each segment (`alrcatraz`, agent name) carries a 1–3 digit version (`Z`), incremented independently when that layer's content changes.
 
@@ -247,8 +247,8 @@ Agent 版：1.0.0+<owner>.1.<agent>.1    （在个人版之上叠加 agent 信�
 
 | 层 | 标识符 | 版本号示例 |
 |:---|:-------|:-----------|
-| 个人版 | `alrcatraz`（人工操作员） | `1.2.0+alrcatraz.1.0.0` |
-| Agent 版 | Hermes Agent 名称（如 `angelia`） | `1.2.0+alrcatraz.1.0.0.angelia.0.0.0` |
+| 个人版 | `alrcatraz`（人工操作员） | `1.3.0+alrcatraz.1.0.0` |
+| Agent 版 | Hermes Agent 名称（如 `angelia`） | `1.3.0+alrcatraz.1.0.0.angelia.0.0.0` |
 
 各段（`alrcatraz`、agent 名称）独立递增其版本号。详见 [`VERSION`](VERSION)。
 
