@@ -31,11 +31,52 @@ Start work       →  Branch      →  Make changes  →  Review  →  Commit  �
 
 ## 1. Branching Strategy
 
-### Start from a clean main
+### Collaboration model (standard workflow, all projects)
+
+```text
+feature/* ──▶ development ──▶ main (via PR) ──▶ build server pulls main
+     ▲             │              │
+     └── work      └── PR         └── release (tagged)
+```
+
+- **`main`** — production. Only receives merges from `development` via PR.
+  The build server (e.g. SUSETLearn00) pulls **main only** — never feature
+  branches, never development.
+- **`development`** — integration branch. Feature branches merge here via PR.
+  This is where the whole team's work meets; keep it green.
+- **`feature/*`** — your working branch (`feat/`, `fix/`, `refactor/`, `docs/`).
+  Short-lived: cut from `development`, merged back via PR, then deleted.
+
+Hard rules:
+
+1. **Never push directly to `main` or `development`** — all integration goes
+   through PRs (Gitea/GitHub).
+2. **Never have the build server check out a feature branch** — it builds
+   `main` only. If a fix isn't in `main`, the build doesn't see it.
+3. **Double-push every remote project**: Gitea (private) + GitHub (public)
+   both get the same branches and tags. Push order: Gitea first, then GitHub.
+4. If the repo only has `main` (e.g. during a rebuild), recreate
+   `development` before starting feature work:
+   ```bash
+   git checkout -b development main
+   git push -u gitea development
+   git push -u github development
+   ```
+
+### Start a feature branch
 
 ```bash
-git checkout main
-git pull                    # or: git pull --rebase
+# Always branch from the tip of development
+git checkout development
+git pull --rebase            # sync integration branch (gitea + github)
+git checkout -b feat/add-user-auth
+```
+
+If development does not exist locally yet:
+
+```bash
+git fetch gitea development
+git checkout -b development gitea/development
 ```
 
 ### Create a feature branch
@@ -86,8 +127,8 @@ git diff --cached
 # See untracked files (new files git doesn't know about)
 git status --short
 
-# See log in context of your branch
-git log --oneline main..HEAD
+# See log in context of your branch (baseline: development)
+git log --oneline development..HEAD
 ```
 
 ## 3. Staging Strategies
@@ -267,34 +308,65 @@ git rebase --skip
 
 | Use rebase | Use merge |
 |:-----------|:----------|
-| Updating your feature branch from main | Merging a finished feature into main |
+| Updating your feature branch from development | Merging a finished feature into development |
 | Cleaning up your local history | Preserving explicit merge topology |
 | Before pushing to a shared branch | When the merge commit itself is meaningful |
 
-## 7. Pre-Push Verification
+## 7. Pre-Push Verification & PR Merge
 
-Before pushing, do a quick sanity check:
+Before pushing, do a quick sanity check (baseline is **development**, not main):
 
 ```bash
 # 1. Review what you're about to push
-git log --oneline --graph origin/main..HEAD
+git log --oneline --graph origin/development..HEAD
 
 # 2. Check commit signature
 git log --show-signature -3
 
 # 3. Verify no debug/test noise
-git diff origin/main --name-only
+git diff origin/development --name-only
 
 # 4. Check the diff
-git diff origin/main --stat       # files changed
-git diff origin/main               # full diff (if small)
+git diff origin/development --stat     # files changed
+git diff origin/development            # full diff (if small)
 
 # 5. Run tests (if applicable)
 make test || cargo test || pytest
 
-# 6. Push
-git push
+# 6. Rebase onto latest development before pushing
+git fetch origin
+git rebase origin/development
+
+# 7. Push the feature branch (never main/development directly)
+git push -u origin feat/my-feature     # gitea first, then github
 ```
+
+### Merge feature into development via PR
+
+```bash
+# Gitea (private, primary)
+gh pr create --base development --head feat/my-feature   # or via Gitea web UI
+# GitHub (public mirror) — same branch, same PR
+git push github feat/my-feature
+# open PR at github.com/alrcatraz/<repo>/compare/development...feat/my-feature
+
+# After the PR is merged, clean up:
+git checkout development
+git pull --rebase
+git branch -d feat/my-feature
+git push origin --delete feat/my-feature     # both remotes
+git push github --delete feat/my-feature
+```
+
+### Promote development → main
+
+```bash
+# Only after development is green and phase work is complete:
+# open a PR development → main (Gitea + GitHub). Never push main directly.
+```
+
+The build server pulls **main only**, so nothing ships until development
+has been promoted via PR.
 
 ## 8. Multi-Task Switching
 
