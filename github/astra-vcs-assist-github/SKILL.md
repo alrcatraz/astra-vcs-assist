@@ -62,6 +62,7 @@ Load specific topics via `skill_view`:
 | Authentication (GCM, PAT, pass, gh, SSH) | `skill_view(name='astra-vcs-assist-github', file_path='references/auth-setup.md')` |
 | Issue management (view, create, manage) | `skill_view(name='astra-vcs-assist-github', file_path='references/issues.md')` |
 | Pull request workflow (create, CI, merge) | `skill_view(name='astra-vcs-assist-github', file_path='references/pr-workflow.md')` |
+| Upstream contribution (fork, GPG, conflict resolution) | `skill_view(name='astra-vcs-assist-github', file_path='references/upstream-contribution.md')` |
 | Repo ops (fork, releases, CI, secrets, gists) | `skill_view(name='astra-vcs-assist-github', file_path='references/repo-operations.md')` |
 
 ## Quick Reference

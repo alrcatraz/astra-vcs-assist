@@ -61,6 +61,13 @@ code repo.
 | **FAQ** | Frequently asked questions |
 | **Contributing** | How to contribute, coding standards, PR workflow |
 
+> **GitHub Wiki bootstrap pitfall:** GitHub creates the `.wiki.git` repo
+> **lazily** — it does not exist until the first wiki page is created through
+> the web UI. You cannot clone or push to it programmatically beforehand.
+> **Workaround:** Keep wiki content in `docs/wiki/` within the main repo.
+> Once a human visits the wiki page in a browser, the `.wiki.git` repo is
+> created and pages can be pushed via git.
+
 ### When to add a Wiki
 
 A Wiki is worth adding when ALL of these are true:
