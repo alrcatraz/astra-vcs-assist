@@ -245,6 +245,37 @@ gpg --keyserver keyserver.ubuntu.com --send-keys <key-id>
 
 1. **`gpg failed to sign the data`** — Usually means: (a) no secret key for the configured `user.signingkey`, (b) gpg-agent is stuck, or (c) passphrase not cached. Run `gpg --list-secret-keys <key-id>` first to confirm the key is present.
 
+1a. **Never point `gpg.program` at a `/tmp` script.** A wrapper that injects the
+   passphrase into `gpg --batch --pinentry-mode loopback --passphrase …` is a
+   legitimate headless workaround, but pinning `gpg.program` to a `/tmp` path
+   breaks silently the moment the temp directory is cleared — the config entry
+   outlives the file:
+
+   ```
+   fatal: cannot exec '/tmp/git-gpg-wrapper.sh': No such file or directory
+   ```
+
+   Symptom: every `git commit` in that repo fails to sign; the repo sits with a
+   clean-looking `.git/config` that points at a file nobody can find.
+   Detection: `git config --list | grep gpg` (a `gpg.program` entry is the
+   suspect) and `ls -l` the referenced path.
+   Fix: `git config --unset gpg.program` — plain `gpg` works once the
+   passphrase is preset into the agent (§5-A / Pitfall 0 in the instance copy).
+   That is also the safer route: `--passphrase ARG` briefly exposes the
+   passphrase in the process list, while the agent cache does not. If you
+   genuinely need a pinentry-free invocation, keep the wrapper under
+   `~/.local/bin/`, never `/tmp`.
+   Verify the fix in a throwaway repo (no pollution of the real one):
+
+   ```bash
+   T=$(mktemp -d); cd "$T"; git init -q
+   git config user.name  "<name>"; git config user.email "<email>"
+   git config user.signingkey <key-id>; git config commit.gpgsign true
+   git commit -q --allow-empty -S -m "signing test"
+   git log -1 --show-signature | grep -E "Good signature|BAD signature"
+   cd /; rm -rf "$T"
+   ```
+
 2. **`gpg-preset-passphrase` not found** — The binary lives at different paths depending on distro. Common locations: `/usr/libexec/gpg-preset-passphrase` (Fedora, openSUSE), `/usr/lib/gnupg2/gpg-preset-passphrase` (Debian/Ubuntu). Check `pacman -Ql gnupg | grep preset` or `dpkg -L gnupg | grep preset` to find it.
 
 3. **Pinentry in non-TTY environments.** Without a display server, pinentry programs (gtk, qt, curses) can't open their dialog window. Use `--pinentry-mode loopback` or set `gpg-agent.conf`: `pinentry-mode loopback`.
