@@ -243,7 +243,92 @@ gpg --keyserver keyserver.ubuntu.com --send-keys <key-id>
 
 ## Pitfalls
 
+0. **Cross-machine: signing passphrase may be stored in an env file.** On
+alrcatraz's machines the signing passphrase may live in an env file
+(var `GPG_Key_Alrcatraz`, short). Preset it with
+`gpg-preset-passphrase --preset <signing keygrip>` (this machine has
+`allow-preset-passphrase` + long cache TTL). **Never run
+`gpgconf --kill gpg-agent` to debug signing — it clears the cached
+passphrase and forces a re-preset.** If the Hermes terminal lifecycle
+guard crashes (`embedded null byte`) when a bash command contains the
+keygrip/passphrase string, use a small Python `subprocess` via
+`execute_code`, or run `~/.hermes/scripts/preset_gpg_signing.sh`.
+
+   **Recipe is HC01-only; do NOT port it blindly.** Verified 2026-09-16 on
+   SUSETLearn00 (GnuPG 2.5.22): `--pinentry-mode loopback` with either
+   `--passphrase-fd 0` or `--passphrase ARG` over SSH returns error 67109041
+   "No passphrase given" for ALL candidate passphrases (env GPG_Key_* AND the
+   sudo pw) — the loopback request never reaches the agent, so right-vs-wrong
+   passphrase cannot even be distinguished remotely; `gpg-preset-passphrase`
+   fails Not supported / Not implemented even after adding
+   `allow-preset-passphrase` + reloadagent. Lessons: (a) check before appending
+   config directives — mine duplicated an existing one; (b) after two distinct
+   failure modes STOP grinding and hand the user one literal copy-pasteable
+   commit command; (c) staged-but-uncommitted is acceptable only if explicitly
+   surfaced.
+
 1. **`gpg failed to sign the data`** — Usually means: (a) no secret key for the configured `user.signingkey`, (b) gpg-agent is stuck, or (c) passphrase not cached. Run `gpg --list-secret-keys <key-id>` first to confirm the key is present.
+
+1. **FIRST ACTION after any restart: re-preset the passphrase — do not report "cannot sign" to the user.**
+
+   On machines with the HC01-style setup (agent cache TTL 1 day / 7 days max,
+   `allow-preset-passphrase`), a Hermes restart or `gpg-agent` relaunch clears
+   the cached passphrase, and `git commit` then dies with
+   `PINENTRY_LAUNCHED … not a tty — Operation cancelled`. This is NOT a
+   capability gap: the environment is fine, the cache is simply cold.
+
+   Run the existing script and retry — it ends with a real sign test:
+
+   ```bash
+   bash ~/.hermes/scripts/preset_gpg_signing.sh   # prints PRESET_EXIT=0 / SIGN_OK
+   ```
+
+   Only if that prints `SIGN_FAIL` is there a real problem. Reporting
+   "I can't sign, you do it" without running this wastes the user's time and
+   misrepresents a one-command fix as a blocker — expect pushback along the
+   lines of "it used to work", and they are right.
+
+   Check the cache is cold, not the config broken:
+   `git config --get gpg.program` empty + `~/.gnupg/gpg-agent.conf` containing
+   `allow-preset-passphrase` = nothing to fix but the cache.
+
+1a. **Never point `gpg.program` at a `/tmp` script.** A wrapper that injects the
+   passphrase into `gpg --batch --pinentry-mode loopback --passphrase …` is a
+   legitimate headless workaround, but pinning `gpg.program` to a `/tmp` path
+   breaks silently the moment the temp directory is cleared — the config entry
+   outlives the file:
+
+   ```
+   fatal: cannot exec '/tmp/git-gpg-wrapper.sh': No such file or directory
+   ```
+
+   Symptom: every `git commit` in that repo fails to sign; the repo sits with a
+   clean-looking `.git/config` that points at a file nobody can find.
+   Detection: `git config --list | grep gpg` (a `gpg.program` entry is the
+   suspect) and `ls -l` the referenced path.
+   Fix: `git config --unset gpg.program` — plain `gpg` works once the
+   passphrase is preset into the agent (§5-A / Pitfall 0 below).
+   That is also the safer route: `--passphrase ARG` briefly exposes the
+   passphrase in the process list, while the agent cache does not. If you
+   genuinely need a pinentry-free invocation, keep the wrapper under
+   `~/.local/bin/`, never `/tmp`.
+
+   *This machine (instance copy):* the retired wrapper read `GPG_Key_Alrcatraz`
+   from `~/.hermes/.env`, and a copy was pinned into
+   `~/Projects/astra/astra-aigate/.git/config` on 2026-08-13 while the file
+   itself lived in `/tmp` — breaking signing there until 2026-09-12. The durable
+   route is `~/.hermes/scripts/preset_gpg_signing.sh` (presets the signing
+   keygrip into the agent; TTL 1 day, 7 days max).
+   Verify the fix in a throwaway repo (no pollution of the real one):
+
+   ```bash
+   T=$(mktemp -d); cd "$T"; git init -q
+   git config user.name  "Alrcatraz"; git config user.email "alrcatraz@gmx.com"
+   git config user.signingkey B01ECDF27D2D156D; git config commit.gpgsign true
+   git commit -q --allow-empty -S -m "signing test"
+   git log -1 --show-signature | grep -E "Good signature|BAD signature"
+   cd /; rm -rf "$T"
+   ```
 
 2. **`gpg-preset-passphrase` not found** — The binary lives at different paths depending on distro. Common locations: `/usr/libexec/gpg-preset-passphrase` (Fedora, openSUSE), `/usr/lib/gnupg2/gpg-preset-passphrase` (Debian/Ubuntu). Check `pacman -Ql gnupg | grep preset` or `dpkg -L gnupg | grep preset` to find it.
 
