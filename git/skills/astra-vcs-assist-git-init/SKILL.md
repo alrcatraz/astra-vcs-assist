@@ -3,7 +3,18 @@ name: astra-vcs-assist-git-init
 description: "Git repository bootstrap — project initialisation, README conventions, licence selection and analysis, gitignore strategy, per-repo identity, GPG binding, remote setup, documentation strategy, and first commit."
 version: 1.3.0+alrcatraz.1.0.0.angelia.0.0.0
 author: alrcatraz
+triggers:
+  - "新建仓库"
+  - "初始化仓库"
+  - "git init"
+  - "项目脚手架"
+  - "README 规范"
+  - ".gitignore"
 platforms: [linux]
+metadata:
+  hermes:
+    tags: [git, bootstrap, project-initialisation, readme, gitignore]
+
 ---
 
 # astra-vcs-assist-git-init — Repository Bootstrap

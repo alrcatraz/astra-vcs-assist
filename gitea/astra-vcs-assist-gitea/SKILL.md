@@ -4,6 +4,17 @@ description: "Gitea platform operations — authentication, repositories, issues
 version: 1.3.0+alrcatraz.1.0.0.angelia.0.0.0
 author: alrcatraz
 platforms: [linux]
+triggers:
+  - "Gitea"
+  - "git01"
+  - "自建 git"
+  - "gitea api"
+  - "gitea token"
+  - "actions runner"
+  - "私有仓库平台"
+  - "gitea webhook"
+  - "issue 建在 Gitea"
+  - "推送到 Gitea"
 
 metadata:
   hermes:

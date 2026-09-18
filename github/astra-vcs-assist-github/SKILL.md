@@ -3,7 +3,19 @@ name: astra-vcs-assist-github
 description: "GitHub platform operations — authentication, issues, pull requests, releases, CI/CD, secrets, and repository management via the GitHub API."
 version: 1.3.0+alrcatraz.1.0.0.angelia.0.0.0
 author: alrcatraz
+triggers:
+  - "GitHub 操作"
+  - "gh cli"
+  - "提 PR"
+  - "开 issue"
+  - "GitHub Actions"
+  - "repo 管理"
+  - "release"
 platforms: [linux]
+metadata:
+  hermes:
+    tags: [github, gh-cli, pull-requests, issues, actions, api]
+
 ---
 
 # astra-vcs-assist-github — GitHub Platform Operations
