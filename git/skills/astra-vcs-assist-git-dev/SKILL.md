@@ -3,7 +3,21 @@ name: astra-vcs-assist-git-dev
 description: "Daily Git workflow during active development — branch management, staging strategies, commit discipline, stash, rebase vs merge decisions, and pre-push verification."
 version: 1.3.0+alrcatraz.1.0.0
 author: alrcatraz
+triggers:
+  - "日常 git"
+  - "分支管理"
+  - "暂存区"
+  - "commit message"
+  - "写提交信息"
+  - "整理改动"
+  - "branch workflow"
 platforms: [linux]
+metadata:
+  hermes:
+metadata:
+  hermes:
+    tags: [git, daily-workflow, branch, staging, commit-hygiene]
+
 ---
 
 # astra-vcs-assist-git-dev — Daily Development Workflow

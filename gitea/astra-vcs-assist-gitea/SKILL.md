@@ -3,6 +3,17 @@ name: astra-vcs-assist-gitea
 description: "Gitea platform operations — authentication, repositories, issues, pull requests, CI/CD, and webhooks via the Gitea API."
 version: 1.3.0+alrcatraz.1.0.0
 author: alrcatraz
+triggers:
+  - "Gitea"
+  - "git01"
+  - "自建 git"
+  - "gitea api"
+  - "gitea token"
+  - "actions runner"
+  - "私有仓库平台"
+  - "gitea webhook"
+  - "issue 建在 Gitea"
+  - "推送到 Gitea"
 platforms: [linux]
 
 metadata:

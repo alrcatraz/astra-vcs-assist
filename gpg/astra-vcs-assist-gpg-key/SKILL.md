@@ -3,7 +3,21 @@ name: astra-vcs-assist-gpg-key
 description: "GPG key lifecycle management — check existing keys, import from backup, generate new keys, configure for VCS signing, key rotation, and cross-machine distribution."
 version: 1.3.0+alrcatraz.1.0.0
 author: alrcatraz
+triggers:
+  - "GPG 密钥"
+  - "签名密钥"
+  - "gpg key"
+  - "导入私钥"
+  - "密钥备份"
+  - "git commit -S"
+  - "signing key"
 platforms: [linux]
+metadata:
+  hermes:
+metadata:
+  hermes:
+    tags: [gpg, key-management, signing, backup, ssh-keys]
+
 ---
 
 # astra-vcs-assist-gpg-key — GPG Key Lifecycle Management
