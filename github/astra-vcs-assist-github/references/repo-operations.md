@@ -65,6 +65,25 @@ curl -s -X PUT -H "Authorization: token $GITHUB_TOKEN" \
   }'
 ```
 
+## Delete Repository
+
+```bash
+# gh (requires the delete_repo scope!)
+gh repo delete OWNER/REPO --yes
+
+# curl
+curl -s -X DELETE -H "Authorization: token $GITHUB_TOKEN" \
+  https://api.github.com/repos/OWNER/REPO
+```
+
+### Pitfalls
+
+- **Deleting a repository requires the `delete_repo` scope** — a plain gh token (`gist, read:org, repo, workflow`) gets 403:`Must have admin rights to Repository.` / `This API operation needs the "delete_repo" scope`
+- Add the scope: `gh auth refresh -h github.com -s delete_repo` → the device-code flow **requires the user to enter the code in a browser** (no agent substitute; codes expire in ~5 minutes, so repeated timeouts occur when the user is away from the machine)
+- Even with delete_repo, another account cannot delete a repo it does not administer (`permissions.admin=false`)
+- Web fallback: repo page → Settings → Danger Zone → Delete this repository → type the repo name to confirm
+- Before deleting, verify the target really is a stray/empty shell: `gh api repos/O/R/git/trees/HEAD --jq '.tree[] | .path'` should list only licence-class single files, with the real content elsewhere (another owner/backup)
+
 ## Gists
 
 ```bash
