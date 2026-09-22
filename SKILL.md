@@ -79,6 +79,7 @@ Below is a summary for quick reference:
 | GPG key management (check, import, generate, rotate) | `skill_view(name='astra-vcs-assist-gpg-key')` |
 | Repository init (README, LICENSE, gitconfig, GPG binding) | `skill_view(name='astra-vcs-assist-git-init')` |
 | Daily dev workflow (branch, stage, commit, stash) | `skill_view(name='astra-vcs-assist-git-dev')` |
+| Branch model / protection / CI gates / dual-forge push rules | `references/branch-protection-model.md` (in this skill) |
 | Release prep (squash, split, reword, tag, changelog) | `skill_view(name='astra-vcs-assist-git-release')` |
 | Push, sync, transfer (dual remote, force push, bundle) | `skill_view(name='astra-vcs-assist-git-sync')` |
 

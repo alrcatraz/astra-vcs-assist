@@ -45,6 +45,11 @@ Start work       →  Branch      →  Make changes  →  Review  →  Commit  �
 
 ### Collaboration model (standard workflow, all projects)
 
+**The complete model (tier roles, protection rules, CI gate table, dual-forge
+push conventions) lives in `astra-vcs-assist` →
+`references/branch-protection-model.md` — that is the authoritative version;
+this section is a quick-reference summary.**
+
 ```text
 feature/* ──▶ development ──▶ main (via PR) ──▶ build server pulls main
      ▲             │              │
