@@ -143,3 +143,27 @@ routing:
     skills:
       - name: astra-vcs-assist-git-fork
     principles: "Keep upstream remote. Never push upstream branches. Copyright: append, never replace. Split infra changes from content changes."
+  # ── Code Review Pipeline ──────────────────────────────────
+  - type: vcs-review
+    label: "Pre-commit code review"
+    indicators:
+      - review code
+      - review my changes
+      - code review
+      - pre commit verification
+      - verify code
+      - verify changes
+      - static security scan
+      - security scan
+      - quality gate
+      - independent review
+      - auto fix
+      - fix issues
+      - before commit
+      - check before push
+      - verify before commit
+      - commit verification
+      - pre commit check
+    skills:
+      - name: astra-vcs-assist-git-review
+    principles: "Not a reviewer should verify its own work — fresh context finds what you miss. Auto-fix loop is limited to 2 cycles. Escalate to user after that."

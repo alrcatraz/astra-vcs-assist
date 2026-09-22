@@ -80,3 +80,36 @@ cat ~/.ssh/id_ed25519.pub
 # Add to https://github.com/settings/keys
 ssh -T git@github.com
 ```
+
+## Multi-Account Pitfall — gh active-account mismatch (403 on push)
+
+> Symptom: `push https://github.com/<owner>/<repo>` returns `403 Permission denied to <login-A>` while commit identity (user.name/email) has always been `<login-B>` and signing is fine.
+
+**When `gh auth login` has several GitHub accounts on one machine**, git push credentials come from the **currently active gh account** (`gh auth git-credential` returns the token of the `Active account`):
+
+- `<login-A>` (active)
+- `<login-B>` (inactive, yet the real owner of the target repo with push:true/admin)
+
+If the target repo belongs to the **inactive** account, pushing with the active one yields 403 — **a credential-identity mismatch, not a signing or local-git-identity problem**.
+
+### Diagnosis
+
+```bash
+# 1. Account list and which one is active
+gh auth status                     # Active account: true/false
+# 2. The target account's real push permission on the repo (query WITH that account's token, never the active one)
+OWNER_TOKEN=$(gh auth token -h github.com --user <owner>)   # explicitly switch account for the token
+GH_TOKEN="$ZH_TOKEN" gh api repos/<owner>/<repo> --jq '.permissions'
+# push:true → that account can write
+```
+
+⚠️ Querying `.permissions` with the active account shows **its own** rights and misleads: `push:false` ≠ the repo is unwritable, only that the active account cannot write.
+
+### Fix (minimal side effects)
+
+```bash
+gh auth switch --user <owner>     # point the active account at the repo owner
+git push -f <remote> <branch>     # push (succeeds)
+gh auth switch --user <original>  # switch straight back; avoid a lasting global change
+```
+

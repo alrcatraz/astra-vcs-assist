@@ -1,9 +1,21 @@
 ---
 name: astra-vcs-assist-github
 description: "GitHub platform operations — authentication, issues, pull requests, releases, CI/CD, secrets, and repository management via the GitHub API."
-version: 1.3.0
+version: 1.3.0+alrcatraz.1.0.0.angelia.0.0.0
 author: alrcatraz
+triggers:
+  - "GitHub 操作"
+  - "gh cli"
+  - "提 PR"
+  - "开 issue"
+  - "GitHub Actions"
+  - "repo 管理"
+  - "release"
 platforms: [linux]
+metadata:
+  hermes:
+    tags: [github, gh-cli, pull-requests, issues, actions, api]
+
 ---
 
 # astra-vcs-assist-github — GitHub Platform Operations
@@ -62,6 +74,7 @@ Load specific topics via `skill_view`:
 | Authentication (GCM, PAT, pass, gh, SSH) | `skill_view(name='astra-vcs-assist-github', file_path='references/auth-setup.md')` |
 | Issue management (view, create, manage) | `skill_view(name='astra-vcs-assist-github', file_path='references/issues.md')` |
 | Pull request workflow (create, CI, merge) | `skill_view(name='astra-vcs-assist-github', file_path='references/pr-workflow.md')` |
+| Upstream contribution (fork, GPG, conflict resolution) | `skill_view(name='astra-vcs-assist-github', file_path='references/upstream-contribution.md')` |
 | Repo ops (fork, releases, CI, secrets, gists) | `skill_view(name='astra-vcs-assist-github', file_path='references/repo-operations.md')` |
 
 ## Quick Reference

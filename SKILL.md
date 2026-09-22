@@ -1,8 +1,18 @@
 ---
 name: astra-vcs-assist
 description: "VCS workflow orchestrator — GPG key management, Git init, commit workflow, release management, and cross-machine sync. Routes to VCS-specific sub-skills by task type."
-version: 1.3.0
+version: 1.3.0+alrcatraz.1.0.0.angelia.0.0.0
 author: alrcatraz
+triggers:
+  - "git 工作流"
+  - "版本控制"
+  - "仓库操作"
+  - "提交前检查"
+  - "怎么建仓库"
+  - "git 初始化"
+  - "双远端"
+  - "fork 管理"
+  - "签名提交"
 platforms: [linux]
 related_skills:
   - astra-vcs-assist-gpg-key
@@ -10,6 +20,10 @@ related_skills:
   - astra-vcs-assist-git-dev
   - astra-vcs-assist-git-release
   - astra-vcs-assist-git-sync
+metadata:
+  hermes:
+    tags: [vcs, git, gitea, github, gpg, orchestrator, workflow]
+
 ---
 
 # astra-vcs-assist — Version Control Workflow Orchestrator
@@ -65,6 +79,7 @@ Below is a summary for quick reference:
 | GPG key management (check, import, generate, rotate) | `skill_view(name='astra-vcs-assist-gpg-key')` |
 | Repository init (README, LICENSE, gitconfig, GPG binding) | `skill_view(name='astra-vcs-assist-git-init')` |
 | Daily dev workflow (branch, stage, commit, stash) | `skill_view(name='astra-vcs-assist-git-dev')` |
+| Branch model / protection / CI gates / dual-forge push rules | `references/branch-protection-model.md` (in this skill) |
 | Release prep (squash, split, reword, tag, changelog) | `skill_view(name='astra-vcs-assist-git-release')` |
 | Push, sync, transfer (dual remote, force push, bundle) | `skill_view(name='astra-vcs-assist-git-sync')` |
 
