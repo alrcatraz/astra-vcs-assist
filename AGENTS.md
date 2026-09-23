@@ -21,7 +21,7 @@ agent context for the repo; keep it current with `references/tower-model.md`.
   content; verify per release with `git diff main public` — allowed diffs are
   only: `gitea/` dir, instance-specific domain lines, version suffixes,
   private-architecture docs. Any other diff is a leak — stop and fix.
-- Instance facts (private forge domains like `git01.wrt.astra-lab.org`,
+- Instance facts (private forge domains like `<private-forge-host>`,
   machine names, credential paths) live ONLY in files listed under
   `.publications.allowlist` (below §4). New files default to "must be clean
   before public push".

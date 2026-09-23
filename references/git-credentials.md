@@ -56,7 +56,7 @@ git remote set-url origin git@github.com:owner/repo.git
 # Get token from fact_store or GPG store
 TOKEN="<api-token>"
 # Push via HTTPS+token:
-git push "https://alrcatraz:${TOKEN}@git01.wrt.astra-lab.org/alrcatraz/repo.git" my-branch
+git push "https://alrcatraz:${TOKEN}@<private-forge-host>/alrcatraz/repo.git" my-branch
 ```
 
 ## Pitfalls
