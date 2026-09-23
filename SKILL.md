@@ -18,8 +18,11 @@ related_skills:
   - astra-vcs-assist-gpg-key
   - astra-vcs-assist-git-init
   - astra-vcs-assist-git-dev
+  - astra-vcs-assist-git-fork
   - astra-vcs-assist-git-release
+  - astra-vcs-assist-git-review
   - astra-vcs-assist-git-sync
+  - astra-vcs-assist-versioning
 metadata:
   hermes:
     tags: [vcs, git, gitea, github, gpg, orchestrator, workflow]
@@ -50,8 +53,13 @@ astra-vcs-assist (orchestrator)
   ├── git/                     ← Git-specific workflow
   │   ├── astra-vcs-assist-git-init      Repo bootstrap
   │   ├── astra-vcs-assist-git-dev       Daily development flow
+  │   ├── astra-vcs-assist-git-fork      Fork & upstream adaptation
+  │   ├── astra-vcs-assist-git-review    Pre-commit review pipeline
   │   ├── astra-vcs-assist-git-release   Commit cleanup + tagging
   │   └── astra-vcs-assist-git-sync      Push + remote + transfer
+  │
+  ├── versioning/              ← Repo meta: layer scheme + dual-branch release
+  │   └── astra-vcs-assist-versioning
   │
   └── future VCS domains
       └── hg/                  ← Mercurial (when needed)
@@ -80,8 +88,12 @@ Below is a summary for quick reference:
 | Repository init (README, LICENSE, gitconfig, GPG binding) | `skill_view(name='astra-vcs-assist-git-init')` |
 | Daily dev workflow (branch, stage, commit, stash) | `skill_view(name='astra-vcs-assist-git-dev')` |
 | Branch model / protection / CI gates / dual-forge push rules | `references/branch-protection-model.md` (in this skill) |
+| Multi-remote topology / upstream relations / disclosure-layer clipping decisions | `references/tower-model.md` (in this skill) |
 | Release prep (squash, split, reword, tag, changelog) | `skill_view(name='astra-vcs-assist-git-release')` |
+| Fork & upstream adaptation (dual-remote fork, licensing, PR back) | `skill_view(name='astra-vcs-assist-git-fork')` |
+| Pre-commit review pipeline | `skill_view(name='astra-vcs-assist-git-review')` |
 | Push, sync, transfer (dual remote, force push, bundle) | `skill_view(name='astra-vcs-assist-git-sync')` |
+| This repo's version scheme + dual-branch release | `skill_view(name='astra-vcs-assist-versioning')` |
 
 ### Loading a Sub-Skill
 
@@ -112,8 +124,11 @@ Git is the first supported VCS. Its sub-skills cover the full workflow:
 |:------|:----------|:-------|
 | Setup | `astra-vcs-assist-git-init` | README, LICENSE, .gitignore, gitconfig, GPG binding |
 | Daily | `astra-vcs-assist-git-dev` | Branch, stage, commit, stash, merge/rebase during development |
+| Fork | `astra-vcs-assist-git-fork` | Dual-remote fork setup, upstream adaptation, licensing, PR back |
+| Review | `astra-vcs-assist-git-review` | Pre-commit diff review pipeline, static checks |
 | Release | `astra-vcs-assist-git-release` | Commit reorganisation, message writing, tagging, changelog |
 | Sync | `astra-vcs-assist-git-sync` | Push, force push, dual remote, git bundle |
+| Meta | `astra-vcs-assist-versioning` | Three-layer SemVer scheme + this repo's dual-branch release flow |
 
 ## SOUL Alignment
 

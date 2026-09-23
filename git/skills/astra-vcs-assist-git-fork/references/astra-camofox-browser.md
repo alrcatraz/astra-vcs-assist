@@ -49,7 +49,7 @@ Pushed straight from the host with `git push origin-astra astra` (interactive TT
 
 ### 7. Directory Rename
 
-`camofox-browser` → `astra-camofox-browser`(consistent with other astra projects)
+`camofox-browser` → `astra-camofox-browser` (consistent with other astra projects)
 
 ### 8. Release Decision
 

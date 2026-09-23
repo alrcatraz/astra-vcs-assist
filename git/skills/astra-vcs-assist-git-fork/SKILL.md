@@ -49,6 +49,13 @@ Load this skill when:
 
 ## Workflow
 
+> **When upstream will not take our plumbing (CI/nix/packaging), read the
+> umbrella-level `references/tower-model.md` first**
+> (`skill_view('astra-vcs-assist', file_path='references/tower-model.md')`) —
+> the universal tower-and-projection model: stack INFRA/ADAPT/PATCH/BASE in one
+> linear tower, serve audiences via slice-projections, never parallel branches.
+> This skill is that model's operational landing for the fork case.
+
 ### 1. Git Setup
 
 ```bash

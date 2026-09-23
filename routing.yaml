@@ -143,6 +143,40 @@ routing:
     skills:
       - name: astra-vcs-assist-git-fork
     principles: "Keep upstream remote. Never push upstream branches. Copyright: append, never replace. Split infra changes from content changes."
+  # ── Tower Model: Topology & Projection Decisions ─────────
+  - type: vcs-topology-tower
+    label: "Repo topology governance (tower & projections)"
+    indicators:
+      - fork governance
+      - upstream rebase
+      - dual remote strategy
+      - multi remote topology
+      - open source disclosure
+      - sanitise public branch
+      - upstream tracking branch
+      - tower model
+      - projection
+      - default branch naming
+    skills:
+      - name: astra-vcs-assist
+        reference: references/tower-model.md
+    principles: "One linear tower (INFRA/ADAPT/PATCH/BASE); audiences get slice-projections, never parallel branches. Upstream projection = cherry-pick PATCH only; cross-trust-domain disclosure strips INFRA and sanitises ADAPT."
+
+  # ── Repo Versioning & Dual-Branch Release ────────────────
+  - type: vcs-versioning
+    label: "Three-layer SemVer + dual-branch release (this repo)"
+    indicators:
+      - version scheme
+      - three-layer version
+      - semver suffix
+      - dual-branch release
+      - public branch
+      - promotion
+      - agent layer bump
+    skills:
+      - name: astra-vcs-assist-versioning
+    principles: "Layers are nested subsets (GitHub ⊂ Gitea ⊂ instance); content added upward, suffixes stripped downward. Release advances both remotes' main via PR."
+
   # ── Code Review Pipeline ──────────────────────────────────
   - type: vcs-review
     label: "Pre-commit code review"

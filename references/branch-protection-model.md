@@ -51,7 +51,8 @@ branch protection rules likewise. In workflow files match the table above with
 The established divergence-handling convention, formalised:
 
 - **Order**: everything goes to Gitea first (private machine room, source of
-  truth), then to GitHub (public mirror).`git push gitea <branch> && git push github <branch>`。
+  truth), then to GitHub (public mirror).
+  `git push gitea <branch> && git push github <branch>`.
 - **Protection on both sides**: set branch protection on Gitea AND GitHub —
   GitHub is the public face, missing config means running naked; Gitea is the
   work surface, missing config means the setting was pointless.
@@ -63,6 +64,9 @@ The established divergence-handling convention, formalised:
 - **Fork upstream sync**: the upstream remote is fetch-only, never push; sync
   merges into development, never merge upstream directly onto main.
 - Detailed push/credential-injection recipes: see astra-vcs-assist-git-sync.
+
+For which *slice* each audience may see (layering and clipping decisions),
+see `references/tower-model.md`.
 
 ## Daily operation sequence (quick reference)
 

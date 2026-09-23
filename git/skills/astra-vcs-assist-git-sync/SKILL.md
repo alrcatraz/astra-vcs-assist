@@ -79,6 +79,11 @@ Before pushing, determine the remote relationship:
 
 ### Decision: Which sync strategy?
 
+> This table governs **how to push** (mechanics). For **which slice of content
+> each audience may see** — layering and clipping decisions — see the
+> umbrella-level `references/tower-model.md` (Projection A/B, remote-pair
+> tri-state classification).
+
 | Remote topology | How to recognise | Strategy |
 |:----------------|:-----------------|:---------|
 | **Single remote** | Only `origin`, no other remotes | §1 — Single Remote Push |
