@@ -1,7 +1,7 @@
 ---
 name: astra-vcs-assist-gitea
 description: "Gitea platform operations — authentication, repositories, issues, pull requests, CI/CD, and webhooks via the Gitea API."
-version: 1.3.0+alrcatraz.1.0.0.angelia.0.0.0
+version: 1.4.0+alrcatraz.1.0.0
 author: alrcatraz
 triggers:
   - "Gitea"

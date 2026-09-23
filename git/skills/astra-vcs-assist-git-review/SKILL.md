@@ -1,7 +1,7 @@
 ---
 name: astra-vcs-assist-git-review
 description: "Pre-commit code review pipeline — diff collection, static security scan, baseline comparison, self-review checklist, independent agent review, and auto-fix loop."
-version: 1.0.0+alrcatraz.0.1.0
+version: 1.4.0+alrcatraz.1.0.0
 author: alrcatraz
 triggers:
   - "提交前审查"
