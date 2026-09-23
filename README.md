@@ -85,7 +85,7 @@ Agent:     1.0.0+<owner>.1.<agent>.1    (agent-specific on top of personal)
   and in the project root `VERSION` file
 - When publishing to a higher (cleaner) layer, strip the lower-layer suffixes
 
-**This instance** (`git01.wrt.astra-lab.org`) uses:
+**This instance** (`<private-forge-host>`) uses:
 
 | Layer | Name | Version Example |
 |:------|:-----|:----------------|
@@ -243,7 +243,7 @@ Agent 版：1.0.0+<owner>.1.<agent>.1    （在个人版之上叠加 agent 信�
 - 版本号记录在每个技能的 YAML frontmatter `version:` 字段和仓库根目录的 `VERSION` 文件
 - 向更高（更干净）的层发布时，去掉下层的后缀
 
-本实例（`git01.wrt.astra-lab.org`）的命名规则：
+本实例（`<private-forge-host>`）的命名规则：
 
 | 层 | 标识符 | 版本号示例 |
 |:---|:-------|:-----------|

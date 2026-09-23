@@ -1,7 +1,7 @@
 ---
 name: astra-vcs-assist-versioning
 description: "Three-layer SemVer 2.0 versioning scheme for the astra-vcs-assist repo, covering official/personal/agent layers and the dual-branch release workflow between Gitea and GitHub."
-version: 1.4.0+alrcatraz.1.0.0
+version: 1.4.0
 author: alrcatraz
 platforms: [linux]
 metadata:
@@ -60,7 +60,7 @@ must handle it separately from YAML frontmatter.
 Rule: GitHub = minimal public subset, Gitea = +private, instance copy = +local. Anything referencing the private multi-remote architecture is
 Gitea-only, never public:
 
-- Gitea domain/URLs (`git01.wrt.astra-lab.org`), instance version tables
+- Gitea domain/URLs (`<private-forge-host>`), instance version tables
 - "Double-push gitea+github" workflow instructions with `git push -u gitea ...`
 - Branch layout naming `main` (Gitea) vs `up/public` projection workspace
 
@@ -245,7 +245,7 @@ git rm -r gitea/
 # Clean README for public consumption:
 # - Remove instance-specific naming tables
 # - Remove gitea/ from architecture tree
-# - Remove any git01.wrt.astra-lab.org references
+# - Remove any <private-forge-host> references
 # - Do NOT label branches — the README badge shows a VERSION link only
 # - Remove "Branch: public" or "Branches: ..." lines if present
 
