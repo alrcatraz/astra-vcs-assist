@@ -1,7 +1,7 @@
 ---
 name: astra-vcs-assist-versioning
 description: "Three-layer SemVer 2.0 versioning scheme for the astra-vcs-assist repo, covering official/personal/agent layers and the dual-branch release workflow between Gitea and GitHub."
-version: 1.4.0+alrcatraz.1.0.0
+version: 1.4.1+alrcatraz.1.0.1
 author: alrcatraz
 platforms: [linux]
 metadata:

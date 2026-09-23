@@ -1,7 +1,7 @@
 ---
 name: astra-vcs-assist-gpg-key
 description: "GPG key lifecycle management — check existing keys, import from backup, generate new keys, configure for VCS signing, key rotation, and cross-machine distribution."
-version: 1.4.0+alrcatraz.1.0.0
+version: 1.4.1+alrcatraz.1.0.1
 author: alrcatraz
 triggers:
   - "GPG 密钥"
@@ -266,8 +266,8 @@ guard crashes (`embedded null byte`) when a bash command contains the
 keygrip/passphrase string, use a small Python `subprocess` via
 `execute_code`, or run `~/.hermes/scripts/preset_gpg_signing.sh`.
 
-   **Recipe is HC01-only; do NOT port it blindly.** Verified 2026-09-16 on
-   SUSETLearn00 (GnuPG 2.5.22): `--pinentry-mode loopback` with either
+   **Recipe is host-specific; do NOT port it blindly.** On a remote GnuPG
+   2.5.x machine (observed on our office workstation): `--pinentry-mode loopback` with either
    `--passphrase-fd 0` or `--passphrase ARG` over SSH returns error 67109041
    "No passphrase given" for ALL candidate passphrases (env GPG_Key_* AND the
    sudo pw) — the loopback request never reaches the agent, so right-vs-wrong

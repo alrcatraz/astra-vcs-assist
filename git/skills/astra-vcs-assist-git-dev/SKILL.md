@@ -1,7 +1,7 @@
 ---
 name: astra-vcs-assist-git-dev
 description: "Daily Git workflow during active development — branch management, staging strategies, commit discipline, stash, rebase vs merge decisions, and pre-push verification."
-version: 1.4.0+alrcatraz.1.0.0
+version: 1.4.1+alrcatraz.1.0.1
 author: alrcatraz
 triggers:
   - "日常 git"
@@ -57,7 +57,7 @@ feature/* ──▶ development ──▶ main (via PR) ──▶ build server p
 ```
 
 - **`main`** — production. Only receives merges from `development` via PR.
-  The build server (e.g. SUSETLearn00) pulls **main only** — never feature
+  The build server (in this fleet: the office workstation) pulls **main only** — never feature
   branches, never development.
 - **`development`** — integration branch. Feature branches merge here via PR.
   This is where the whole team's work meets; keep it green.
