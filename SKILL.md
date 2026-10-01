@@ -90,6 +90,7 @@ Below is a summary for quick reference:
 | Branch model / protection / CI gates / dual-forge push rules | `references/branch-protection-model.md` (in this skill) |
 | Multi-remote topology / upstream relations / disclosure-layer clipping decisions | `references/tower-model.md` (in this skill) |
 | Trust-level assignment / verification for a remote | `references/trust-level-verification.md` (in this skill) |
+| Deciding which content belongs at the target level (the disclosure clip) | `references/prose-artefact-layer-attribution.md` (in this skill) |
 | Measuring what a repo actually carries (values / INFRA inventory) | `python3 scripts/scan-tracked-values.py` (in this skill) |
 | Release prep (squash, split, reword, tag, changelog) | `skill_view(name='astra-vcs-assist-git-release')` |
 | Fork & upstream adaptation (dual-remote fork, licensing, PR back) | `skill_view(name='astra-vcs-assist-git-fork')` |
