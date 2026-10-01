@@ -29,12 +29,13 @@ agent context for the repo; keep it current with `references/tower-model.md`.
     L1 names the intent: real values delivered as-is.
   - `github : L3` — public sanitised projection (disclosure clip of Gitea main)
 - **GitHub must never contain what Gitea lacks.** Direction is one-way for
-  content; verify per release with `git diff main public` — allowed diffs are
-  only: `gitea/` dir, instance-specific domain lines, version suffixes,
-  private-architecture docs. Any other diff is a leak — stop and fix.
+  content; verify per release with a tree diff between the private and public
+  lines — allowed diffs are only: `gitea/` dir, instance-specific domain lines,
+  version suffixes, private-architecture docs. Any other diff is a leak — stop
+  and fix.
 - Instance facts (private forge domains like `your-forge.example.com`,
-  machine names, credential paths) live ONLY in files listed under
-  `.publications.allowlist` (below §4). New files default to "must be clean
+  machine names, credential paths) live ONLY in files listed under the
+  publication allowlist (§5). New files default to "must be clean
   before public push".
 - INFRA commits carry `ci(<tool>):` prefixes; projections are cherry-pick /
   replay, never merge across the boundary.
@@ -50,15 +51,32 @@ agent context for the repo; keep it current with `references/tower-model.md`.
   frontmatter `related_skills`), `routing.yaml`, and the symlink.
 - Editing goes to the dev repo `~/Projects/astra/astra-vcs-assist/`; the
   production copy `~/.astra/repos/astra-vcs-assist/` is synchronised by
-  fetch/reset only, never edited.
+  fetch/reset from the remote only, never edited.
+- Work reaches a remote by the §4 flow — never by pairing two local copies
+  directly (a local merge between dev and production copies bypasses the
+  review gate and the remote as source of truth).
 
-## 4. Release discipline (see versioning sub-skill for full flow)
+## 4. Branch model and release discipline
 
+See `references/branch-protection-model.md` for the authoritative model.
+
+```text
+feat/* · fix/* ──merge──▶ development ──PR──▶ main ──tag──▶ release
+  (short-lived)            (integration)     (release line)
+```
+
+- **Feature/fix branches merge into `development`** (a plain `git merge`; PR
+  optional). Cut from `development`, delete after merge.
+- **`development` → `main` is a PR** — never a direct push. `main` receives
+  no feature commits directly; version bumps and tags land on `main` only.
+- Both branches are protected on Gitea and GitHub (direct push and force-push
+  blocked; PR required). The protection is locked by default and only lifted
+  for a genuine history-rewrite incident, then restored and re-probed.
 - Layers are nested subsets: GitHub(public) ⊂ Gitea(main) ⊂ instance copy.
   Content is added upward; version suffixes strip downward.
-- Release advances **both remotes' `main` via PR**; pushing a branch + tagging
-  alone is not a release.
-- Before any public push: run the leak check (§2) and the language check (§1).
+- Before any push to a ≥ L2 remote: run the whole-tree leak check
+  (`references/prose-artefact-layer-attribution.md`) and the language check (§1).
+- Projections are cherry-pick / replay, never merge across the level boundary.
 
 ## 5. Publication allowlist (files permitted to carry instance facts)
 
