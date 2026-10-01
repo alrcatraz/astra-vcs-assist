@@ -252,6 +252,11 @@ git rm -r gitea/
 # All SKILL.md: 1.0.0+alrcatraz.1.2.3.X.Y.Z → 1.2.0+alrcatraz.1.0.0 (iterate from last tag!)
 # VERSION:      1.0.0+alrcatraz.1.2.3.X.Y.Z → 1.2.0+alrcatraz.1.0.0
 
+# Neutralise the scanner's OWN ADAPT values (scripts/scan-tracked-values.py):
+# it carries the real forge host, personal path and machine set as pattern
+# literals, so a wholesale copy republishes exactly what it exists to catch.
+# Placeholder each class instead — forge → <private-forge-host>, machine dropped.
+
 # Clean README for public consumption:
 # - Remove instance-specific naming tables
 # - Remove gitea/ from architecture tree
