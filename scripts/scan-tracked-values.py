@@ -19,7 +19,7 @@ import sys
 
 PATTERNS = {
     # ADAPT -- neutralised before INFRA is stripped (ladder order)
-    "forge": r"git01\.wrt\.astra-lab",
+    "forge": r"<private-forge-host>",
     "path": r"/home/<user>",
     "ip": r"\b192\.168\.\d+\.\d+\b|\b10\.\d+\.\d+\.\d+\b",
     "personal": r"\+alrcatraz",
