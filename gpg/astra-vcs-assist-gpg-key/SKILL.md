@@ -283,8 +283,8 @@ keygrip/passphrase string, use a small Python `subprocess` via
 
 1. **FIRST ACTION after any restart: re-preset the passphrase — do not report "cannot sign" to the user.**
 
-   On machines with the HC01-style setup (agent cache TTL 1 day / 7 days max,
-   `allow-preset-passphrase`), a Hermes restart or `gpg-agent` relaunch clears
+   On machines with a cache-TTL-limited GPG setup (agent cache TTL 1 day / 7 days
+   max, `allow-preset-passphrase`), a Hermes restart or `gpg-agent` relaunch clears
    the cached passphrase, and `git commit` then dies with
    `PINENTRY_LAUNCHED … not a tty — Operation cancelled`. This is NOT a
    capability gap: the environment is fine, the cache is simply cold.
