@@ -15,7 +15,7 @@ feat/* · fix/* · chore/* ──PR──▶ development ──PR──▶ main 
 | Tier | Function | Who may push | Protection |
 |---|---|---|---|
 | `main` | release line: releasable and pullable by build machines at any moment | PR merges only (development→main) | direct push forbidden, force-push forbidden; PRs need green CI + (when multi-person) review |
-| `development` | integration branch: features converge and are validated here | PR merges only (feature→develop); solo repos allow maintainer direct pushes of small fixes | force-push forbidden; CI must run and stay green |
+| `development` | integration branch: features converge and are validated here | merge results pushed by the maintainer (feature→development is a `git merge`, PR optional) | force-push forbidden; direct push ALLOWED; CI must run and stay green |
 | `feat/*` etc. | single-task workspace | task author freely | none (delete when done) |
 
 Hard rules:
@@ -53,11 +53,17 @@ branch protection rules likewise. In workflow files match the table above with
 
 The established divergence-handling convention, formalised:
 
-- **Levels first**: per remote assign a trust level (tower-model §1.1) —
-  e.g. `gitea: L2`, `github: L3`. The classic private-Gitea/public-GitHub pair
-  is the *disclosure* shorthand (L1/L2 → L3 clip). A repo declared clean at
-  source may collapse both to the same level with zero pre-push work; read the
-  repo's AGENTS.md declaration, never infer from forge brand.
+- **Levels first**: per remote assign a trust level (tower-model §1.1) — never
+  read it off the forge brand. Measure it (trust-level-verification.md): the
+  private authority in this fleet's classic pair is **L1**, not L2 — its ADAPT
+  values stay concrete because a fleet agent pulls it and fills in its own
+  machine's differences, so it carries the full tower.
+- **Public mirror = projection, so it takes no integration branch.** Do not
+  create `development` on the public remote: the split is
+  feature→`development`→(PR)→`main` on the *private* remote, and work reaches
+  the public remote only as a sanitised projection of `main`. A public
+  `development` exposes the private branching model and gives the mirror a
+  second integration surface nobody should be pushing to.
 - **Order**: everything goes to Gitea first (private machine room, source of
   truth), then to GitHub (public mirror).
   `git push gitea <branch> && git push github <branch>`.
@@ -87,9 +93,11 @@ git push gitea main    # MUST be rejected
 git push github main   # MUST be rejected
 git reset -q --hard main~1 && git checkout development   # discard probe
 # then confirm both remotes' main still at the pre-probe SHA via ls-remote
+# repeat for development: a new commit pushed to it MUST SUCCEED (that is the
+# integration line's whole purpose) while a --force push MUST be rejected
 ```
 
-Both remotes must reject AND both `ls-remote` heads must be unchanged. A probe
+Every branch must reject AND both `ls-remote` heads must be unchanged. A probe
 that "succeeds" means the config is wrong — fix and re-probe until it rejects.
 
 Three-forge gotchas the probe exposes:
@@ -119,6 +127,56 @@ Settings both sides must carry (the pair that makes the probe reject):
 
 `enforce_admins: true` and force-push blocks are deliberate: they are what an
 emergency has to consciously remove (below), not accidentally ride through.
+
+**Set the same flags on `development` as on `main` and you lock yourself out of
+your own integration line.** `development` must take the merge result of feature
+work, so `enable_push: false` there rejects the maintainer's own
+`git push gitea development` with `pre-receive hook declined` — the branch exists
+but nothing can reach it. The pair that works:
+
+| Branch | Gitea flags |
+|---|---|
+| `main` | `enable_push: false`, `enable_force_push: false`, `enable_pull_request: true`, `required_approvals: 1` |
+| `development` | `enable_push: true`, `enable_force_push: false` (no PR gate, no approvals) |
+
+A push rejected on a branch you just protected is the probe telling you the rule
+is wrong — re-read the tier table above (feature→development is a merge, so the
+branch must accept pushes) and correct the flags, rather than lifting protection
+altogether. Change flags with `PATCH /branch_protections/{name}` taking only the
+fields you are changing; `POST` a second rule with the same `rule_name` does not
+edit the first.
+
+### Approval gates deadlock a solo maintainer (the "cannot approve own PR" trap)
+
+`required_approvals: 1` reads as a review gate, but both forges refuse the only
+reviewer you have — the PR author. The API then reports it as an approvals
+shortfall, which points you at the wrong fix:
+
+- Gitea: `POST /pulls/{i}/reviews` with `{"event":"APPROVED"}` returns
+  **422 `approve your own pull is not allowed`**. The enum is `APPROVED`, not
+  `APPROVE` — a wrong value gets past validation into a review that stays
+  `PENDING` forever, and the merge then answers `405 Does not have enough
+  approvals`. A `PENDING` review is a draft: it needs
+  `POST /pulls/{i}/reviews/{id}` (Submit a pending review) before it counts at
+  all. Neither step helps while the author is the only reviewer.
+- GitHub: `enforce_admins: true` also blocks `gh pr merge --admin`, so even the
+  administrator bypass is gone — `GraphQL: At least 1 approving review is
+  required`.
+
+On a single-maintainer repo the approval gate only gates yourself. Either keep
+`required_approvals: 0` / `required_approving_review_count: 0` as the standing
+value (protection still blocks direct and force pushes — the property the probe
+tests), or accept that merging needs a second identity. Whatever you choose, set
+it **before** the first PR, and know that changing it mid-flight is what the
+deadlock above looks like from the outside: the PR is `mergeable: true`, every
+API call answers, and the merge still refuses.
+
+**An already-merged branch makes a PR unmergeable for a different reason.** If
+`head.sha == base.sha` — because `development` was pushed onto `main` by an
+override before the PR was opened — there is nothing left to merge. Gitea
+answers `405 Please try again later`, which reads like a transient error and
+never resolves. Check `head.sha` vs `base.sha` first: when they match, close the
+PR as already-applied rather than waiting or retrying.
 
 ### Emergency override — the ONLY sanctioned reason to unlock protection
 
