@@ -19,10 +19,11 @@ import sys
 
 PATTERNS = {
     # ADAPT -- neutralised before INFRA is stripped (ladder order)
-    "forge": r"<private-forge-host>",
-    "path": r"/home/<user>",
+    "forge": r"git01\.wrt\.astra-lab",
+    "path": r"/home/alrcatraz",
     "ip": r"\b192\.168\.\d+\.\d+\b|\b10\.\d+\.\d+\.\d+\b",
     "personal": r"\+alrcatraz",
+    "machine": r"\b(HC\d+|SUSET(?:Learn)?\d+|HomeCentre\d*|DS\d+\w*|SL\d+|fedoratg|site17\w+)\b",
 }
 INFRA_SEGMENTS = ("workflows/", ".gitea/", ".github/", "Dockerfile", "flake.nix")
 RX = re.compile("|".join("(?P<%s>%s)" % (k, v) for k, v in PATTERNS.items()))

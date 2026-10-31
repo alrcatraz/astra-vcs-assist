@@ -22,32 +22,43 @@
 `astra-vcs-assist` is a modular Hermes Agent skill and CLI toolkit that
 structures the full version control workflow into domain-specific sub-skills:
 
-- **🔑 GPG** — Key lifecycle management (check, import, generate, rotate)
-- **📦 Git** — Repository init, daily dev workflow, release prep, push & sync
+- **🔑 GPG** — key lifecycle (VCS-agnostic pillar)
+- **📦 Git** — init, daily workflow, review, release, sync, remote auth
+- **🐙 GitHub / 🏭 Forge** — platform operations, PAT lifecycle, dependabot, issue→PR
+- **🕰 History / 🏷 Versioning** — published-history rewriting, layer scheme + release line
 
 Each domain has its own sub-skill tree under this repository, symlinked into
 Hermes' discovery path for automatic loading.
 
 ## Architecture
 
+One registered skill: the root `SKILL.md` routes, everything else is a block under
+`references/<pillar>/<block>/`.
+
+```text
+astra-vcs-assist (macro skill)
+├── SKILL.md                       router (no procedures)
+├── routing.yaml                   machine-readable routing (name + block path)
+├── scripts/scan-tracked-values.py whole-tree value scanner (pre-push gate)
+└── references/
+    ├── INDEX.md                   pillar registry
+    ├── gpg/key-lifecycle/         GPG key lifecycle (VCS-agnostic)
+    ├── git/{init,dev,fork,review,release,sync,remote-auth}/
+    ├── github/{platform,pat,dependabot,issue-to-pr}/
+    ├── forge/platform/            self-hosted Gitea/Forgejo (allowlisted pillar)
+    ├── history/signing/           published-history rewriting
+    ├── versioning/layers/         layer scheme + dual-branch release
+    └── tower-model.md · branch-protection-model.md · trust-level-verification.md
+        prose-artefact-layer-attribution.md · fleet-naming.md · skill-edit-sync.md
 ```
-astra-vcs-assist (orchestrator)
-  │
-  ├── github/
-  │   └── astra-vcs-assist-github     GitHub platform ops
-  ├── gitea/
-  │   └── astra-vcs-assist-gitea      Gitea platform ops
-  ├── gpg/
-  │   └── astra-vcs-assist-gpg-key       GPG key lifecycle
-  │
-  ├── git/
-  │   ├── astra-vcs-assist-git-init      Repository bootstrap
-  │   ├── astra-vcs-assist-git-dev       Daily development workflow
-  │   ├── astra-vcs-assist-git-release   End-of-phase commit cleanup
-  │   └── astra-vcs-assist-git-sync      Push, remote, transfer
-  │
-  └── hg/  (future)
+
+Load a block by path — blocks are not registered skills:
+
 ```
+skill_view(name='astra-vcs-assist', file_path='references/git/dev/SKILL.md')
+```
+
+
 
 ## Three-Layer Versioning
 
@@ -98,19 +109,19 @@ Each segment (`<owner>`, agent name) carries a 1–3 digit version (`Z`), increm
 
 | Sub-skill | Covers |
 |:----------|:-------|
-| `astra-vcs-assist-gpg-key` | Check, import, generate GPG keys; configure for VCS signing; headless passphrase caching |
-| `astra-vcs-assist-git-init` | README, LICENSE analysis, gitconfig, GPG binding, remote setup, first commit |
-| `astra-vcs-assist-git-dev` | Branch, stage, commit, stash during active development |
-| `astra-vcs-assist-git-release` | Commit reorganisation, message writing, tagging, changelog |
-| `astra-vcs-assist-git-sync` | Dual-remote push, safe force push, git bundle |
+| `astra-vcs-assist` → `references/gpg/key-lifecycle/` | Check, import, generate GPG keys; configure for VCS signing; headless passphrase caching |
+| `astra-vcs-assist` → `references/git/init/` | README, LICENSE analysis, gitconfig, GPG binding, remote setup, first commit |
+| `astra-vcs-assist` → `references/git/dev/` | Branch, stage, commit, stash during active development |
+| `astra-vcs-assist` → `references/git/release/` | Commit reorganisation, message writing, tagging, changelog |
+| `astra-vcs-assist` → `references/git/sync/` | Dual-remote push, safe force push, git bundle |
 
 ## Quick Start
 
 ```bash
 # Hermes auto-discovers these skills via symlinks.
 # To load a sub-skill explicitly in a conversation:
-skill_view(name='astra-vcs-assist-gpg-key')
-skill_view(name='astra-vcs-assist-git-init')
+skill_view(name='astra-vcs-assist', file_path='references/gpg/key-lifecycle/SKILL.md')
+skill_view(name='astra-vcs-assist', file_path='references/git/init/SKILL.md')
 
 # All sub-skills are in ~/.hermes/skills/vcs/
 ls -la ~/.hermes/skills/vcs/
@@ -124,21 +135,24 @@ ls -la ~/.hermes/skills/vcs/
      ~/Projects/astra/astra-vcs-assist
    ```
 
-2. Symlink into Hermes' discovery path:
+2. Symlink into Hermes' discovery path — **the repo root only**:
    ```bash
    mkdir -p ~/.hermes/skills/vcs
    ln -sfn ~/Projects/astra/astra-vcs-assist \
      ~/.hermes/skills/vcs/astra-vcs-assist
-   ln -sfn ~/Projects/astra/astra-vcs-assist/gpg/astra-vcs-assist-gpg-key \
-     ~/.hermes/skills/vcs/astra-vcs-assist-gpg-key
-   ln -sfn ~/Projects/astra/astra-vcs-assist/git/skills/astra-vcs-assist-git-init \
-     ~/.hermes/skills/vcs/astra-vcs-assist-git-init
-   ln -sfn ~/Projects/astra/astra-vcs-assist/git/skills/astra-vcs-assist-git-dev \
-     ~/.hermes/skills/vcs/astra-vcs-assist-git-dev
-   ln -sfn ~/Projects/astra/astra-vcs-assist/git/skills/astra-vcs-assist-git-release \
-     ~/.hermes/skills/vcs/astra-vcs-assist-git-release
-   ln -sfn ~/Projects/astra/astra-vcs-assist/git/skills/astra-vcs-assist-git-sync \
-     ~/.hermes/skills/vcs/astra-vcs-assist-git-sync
+   ```
+   Sub-skills are discovered through this one link (each lives in its own
+   topic directory inside the repo). **Do not create per-member links** —
+   a second path to the same `SKILL.md` registers the same name twice and
+   the loader refuses to guess. On a machine that keeps a separate
+   production copy, link that copy instead of the development checkout.
+   ```bash
+   # Verify: every sub-skill reachable, and no stale per-member links
+   for d in gpg/*/ git/skills/*/ github/*/ versioning/*/ gitea-forgejo/*/; do
+     [ -f "$HOME/.hermes/skills/vcs/astra-vcs-assist/$d/SKILL.md" ] \
+       || echo "MISSING: $d"; done
+   ls -d ~/.hermes/skills/vcs/astra-vcs-assist-* 2>/dev/null \
+     && echo "REMOVE these duplicate bridges"
    ```
 
 3. Hermes will auto-discover the new skills on the next turn.
@@ -151,14 +165,14 @@ astra-vcs-assist/
 ├── README.md
 ├── LICENSE                 ← MIT
 ├── gpg/                    ← GPG (VCS-agnostic)
-│   ├── astra-vcs-assist-gpg-key/SKILL.md
+│   ├── gpg/key-lifecycle/SKILL.md
 │   └── references/
 ├── git/                    ← Git-specific
 │   ├── skills/             ← Sub-skills stored here
-│   │   ├── astra-vcs-assist-git-init/
-│   │   ├── astra-vcs-assist-git-dev/
-│   │   ├── astra-vcs-assist-git-release/
-│   │   └── astra-vcs-assist-git-sync/
+│   │   ├── git/init/
+│   │   ├── git/dev/
+│   │   ├── git/release/
+│   │   └── git/sync/
 │   ├── references/
 │   ├── scripts/
 │   └── templates/
@@ -187,8 +201,10 @@ astra-vcs-assist/
 
 `astra-vcs-assist` 是一个模块化的 Hermes Agent 技能和 CLI 工具集，将完整的版本控制工作流组织为领域特定的子技能：
 
-- **🔑 GPG** — 密钥生命周期管理（检查、导入、生成、轮换）
-- **📦 Git** — 仓库初始化、日常开发工作流、发布准备、推送与同步
+- **🔑 GPG** — key lifecycle (VCS-agnostic pillar)
+- **📦 Git** — init, daily workflow, review, release, sync, remote auth
+- **🐙 GitHub / 🏭 Forge** — platform operations, PAT lifecycle, dependabot, issue→PR
+- **🕰 History / 🏷 Versioning** — published-history rewriting, layer scheme + release line
 
 每个领域在本仓库下拥有独立的子技能树，通过符号链接挂载到 Hermes 的自动发现路径。
 
@@ -198,15 +214,15 @@ astra-vcs-assist/
 astra-vcs-assist（编排器）
   │
   ├── github/
-  │   └── astra-vcs-assist-github     GitHub 平台操作
-  ├── gitea/
-  │   └── astra-vcs-assist-gitea      Gitea 平台操作
+  │   └── github/platform           GitHub 平台操作
+  ├── gitea-forgejo/
+  │   └── forge/platform            Gitea/Forgejo 平台操作（仅私有）
   ├── gpg/
-  │   └── astra-vcs-assist-gpg-key       GPG 密钥生命周期
+  │   └── gpg/key-lifecycle         GPG 密钥生命周期
   │
   ├── git/
   │   ├── astra-vcs-assist-git-init      仓库引导
-  │   ├── astra-vcs-assist-git-dev       日常开发工作流
+  │   ├── git/dev                   日常开发工作流
   │   ├── astra-vcs-assist-git-release   阶段收尾提交整理
   │   └── astra-vcs-assist-git-sync      推送、远程、传输
   │
@@ -256,19 +272,19 @@ Agent 版：1.0.0+<owner>.1.<agent>.1    （在个人版之上叠加 agent 信�
 
 | 子技能 | 功能 |
 |:-------|:-----|
-| `astra-vcs-assist-gpg-key` | GPG 密钥检查、导入、生成；VCS 签名配置；免交互密码缓存 |
-| `astra-vcs-assist-git-init` | README、LICENSE 分析、gitconfig、GPG 绑定、远程配置、首次提交 |
-| `astra-vcs-assist-git-dev` | 开发中的分支、暂存、提交、贮藏管理 |
-| `astra-vcs-assist-git-release` | 提交重新组织、消息编写、打标签、变更日志 |
-| `astra-vcs-assist-git-sync` | 双远程推送、安全强制推送、git bundle |
+| `astra-vcs-assist` → `references/gpg/key-lifecycle/` | GPG 密钥检查、导入、生成；VCS 签名配置；免交互密码缓存 |
+| `astra-vcs-assist` → `references/git/init/` | README、LICENSE 分析、gitconfig、GPG 绑定、远程配置、首次提交 |
+| `astra-vcs-assist` → `references/git/dev/` | 开发中的分支、暂存、提交、贮藏管理 |
+| `astra-vcs-assist` → `references/git/release/` | 提交重新组织、消息编写、打标签、变更日志 |
+| `astra-vcs-assist` → `references/git/sync/` | 双远程推送、安全强制推送、git bundle |
 
 ## 快速开始
 
 ```bash
 # Hermes 通过符号链接自动发现这些技能。
 # 在对话中显式加载某个子技能：
-skill_view(name='astra-vcs-assist-gpg-key')
-skill_view(name='astra-vcs-assist-git-init')
+skill_view(name='astra-vcs-assist', file_path='references/gpg/key-lifecycle/SKILL.md')
+skill_view(name='astra-vcs-assist', file_path='references/git/init/SKILL.md')
 
 # 所有子技能位于 ~/.hermes/skills/vcs/
 ls -la ~/.hermes/skills/vcs/
@@ -282,22 +298,15 @@ ls -la ~/.hermes/skills/vcs/
      ~/Projects/astra/astra-vcs-assist
    ```
 
-2. 符号链接到 Hermes 的发现路径：
+2. 符号链接到 Hermes 的发现路径 —— **只链仓库根**：
    ```bash
    mkdir -p ~/.hermes/skills/vcs
    ln -sfn ~/Projects/astra/astra-vcs-assist \
      ~/.hermes/skills/vcs/astra-vcs-assist
-   ln -sfn ~/Projects/astra/astra-vcs-assist/gpg/astra-vcs-assist-gpg-key \
-     ~/.hermes/skills/vcs/astra-vcs-assist-gpg-key
-   ln -sfn ~/Projects/astra/astra-vcs-assist/git/skills/astra-vcs-assist-git-init \
-     ~/.hermes/skills/vcs/astra-vcs-assist-git-init
-   ln -sfn ~/Projects/astra/astra-vcs-assist/git/skills/astra-vcs-assist-git-dev \
-     ~/.hermes/skills/vcs/astra-vcs-assist-git-dev
-   ln -sfn ~/Projects/astra/astra-vcs-assist/git/skills/astra-vcs-assist-git-release \
-     ~/.hermes/skills/vcs/astra-vcs-assist-git-release
-   ln -sfn ~/Projects/astra/astra-vcs-assist/git/skills/astra-vcs-assist-git-sync \
-     ~/.hermes/skills/vcs/astra-vcs-assist-git-sync
    ```
+   子技能全部经这一个链接被发现（各自位于仓库内的主题目录）。**不要为子技能单独建链接** ——
+   同一份 `SKILL.md` 出现两条发现路径会让同名技能重复注册，加载器会拒绝猜测。
+   若本机另存生产副本，请链接生产副本而非开发检出。
 
 3. Hermes 将在下一轮对话中自动发现新技能。
 
@@ -309,14 +318,14 @@ astra-vcs-assist/
 ├── README.md
 ├── LICENSE                 ← MIT
 ├── gpg/                    ← GPG（VCS 无关）
-│   ├── astra-vcs-assist-gpg-key/SKILL.md
+│   ├── gpg/key-lifecycle/SKILL.md
 │   └── references/
 ├── git/                    ← Git 相关
 │   ├── skills/             ← 子技能目录
-│   │   ├── astra-vcs-assist-git-init/
-│   │   ├── astra-vcs-assist-git-dev/
-│   │   ├── astra-vcs-assist-git-release/
-│   │   └── astra-vcs-assist-git-sync/
+│   │   ├── git/init/
+│   │   ├── git/dev/
+│   │   ├── git/release/
+│   │   └── git/sync/
 │   ├── references/
 │   ├── scripts/
 │   └── templates/

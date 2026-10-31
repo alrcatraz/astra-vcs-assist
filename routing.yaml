@@ -5,13 +5,14 @@
 # Machine-readable (scripts/sync-routing.py writes this) AND
 # human-readable (SKILL.md instructs the agent to read this).
 #
-# When adding new routable sub-skills:
+# When adding a routable block:
 #   1. Add a new entry under `routing:`
-#   2. The `skills:` list points to the Hermes skill name(s) to load
+#   2. `skills:` names the macro skill (`astra-vcs-assist`); `path:` selects the block —
+#      blocks under references/ are NOT registered skills, so a path is mandatory
 #   3. `indicators:` lists semantic hints for agent classification
 #
 # Convention:
-#   - skill: Hermes skill name as loaded via skill_view(name)
+#   - skill: registered skill (always the macro); path: block inside its references/ tree
 #   - indicators: semantic hints for agent classification
 
 version: 1
@@ -34,7 +35,8 @@ routing:
       - keygrip
       - gpg-preset-passphrase
     skills:
-      - name: astra-vcs-assist-gpg-key
+      - name: astra-vcs-assist
+        path: references/gpg/key-lifecycle/SKILL.md
     principles: "Check existing keys first. Never hardcode passphrases. See gpg-key-lifecycle.md for algorithm choices."
 
   # ── Repository Init ───────────────────────────────────────
@@ -57,7 +59,8 @@ routing:
       - remote setup
       - add remote
     skills:
-      - name: astra-vcs-assist-git-init
+      - name: astra-vcs-assist
+        path: references/git/init/SKILL.md
     principles: "Per-repo identity (not global). Verify GPG email match. LICENSE file must be standard text (no preamble)."
 
   # ── Daily Development Workflow ────────────────────────────
@@ -79,7 +82,8 @@ routing:
       - git add -p
       - wip
     skills:
-      - name: astra-vcs-assist-git-dev
+      - name: astra-vcs-assist
+        path: references/git/dev/SKILL.md
     principles: "One logical change per commit. Separate tasks, separate commits. `git pull --rebase` by default. Use `git add -p` for partial staging."
 
   # ── Release / Commit Cleanup ──────────────────────────────
@@ -101,7 +105,8 @@ routing:
       - fixup
       - version bump
     skills:
-      - name: astra-vcs-assist-git-release
+      - name: astra-vcs-assist
+        path: references/git/release/SKILL.md
     principles: "Never rebase pushed commits without force-push consent. Verify SemVer bump type before tagging."
 
   # ── Push / Sync / Transfer ────────────────────────────────
@@ -123,7 +128,8 @@ routing:
       - push failed
       - rejected push
     skills:
-      - name: astra-vcs-assist-git-sync
+      - name: astra-vcs-assist
+        path: references/git/sync/SKILL.md
     principles: "Always `git fetch` before `--force-with-lease`. Tags are immutable once pushed. `GIT_TERMINAL_PROMPT=0` for headless pushes."
 
   # ── Fork / Upstream Adaptation ─────────────────────────────
@@ -141,7 +147,8 @@ routing:
       - astra fork
       - dual remote
     skills:
-      - name: astra-vcs-assist-git-fork
+      - name: astra-vcs-assist
+        path: references/git/fork/SKILL.md
     principles: "Keep upstream remote. Never push upstream branches. Copyright: append, never replace. Split infra changes from content changes."
   # ── Tower Model: Topology & Projection Decisions ─────────
   - type: vcs-topology-tower
@@ -174,7 +181,8 @@ routing:
       - promotion
       - agent layer bump
     skills:
-      - name: astra-vcs-assist-versioning
+      - name: astra-vcs-assist
+        path: references/versioning/layers/SKILL.md
     principles: "Layers are nested subsets (GitHub ⊂ Gitea ⊂ instance); content added upward, suffixes stripped downward. Release advances both remotes' main via PR."
 
   # ── Code Review Pipeline ──────────────────────────────────
@@ -199,5 +207,167 @@ routing:
       - commit verification
       - pre commit check
     skills:
-      - name: astra-vcs-assist-git-review
+      - name: astra-vcs-assist
+        path: references/git/review/SKILL.md
     principles: "Not a reviewer should verify its own work — fresh context finds what you miss. Auto-fix loop is limited to 2 cycles. Escalate to user after that."
+
+  # ── GitHub Platform Operations ────────────────────────────
+  - type: vcs-github
+    label: "GitHub platform operations"
+    indicators:
+      - gh cli
+      - gh auth
+      - 提 PR
+      - 开 issue
+      - pull request review
+      - GitHub Actions
+      - re-run workflow
+      - github release
+      - repository secrets
+      - branch protection api
+      - fork a repository
+    skills:
+      - name: astra-vcs-assist
+        path: references/github/platform/SKILL.md
+    principles: "Resolve authentication before the first call (gh if authenticated, else GITHUB_TOKEN, else git-credentials) and derive owner/repo from the remote URL rather than hardcoding it. GitHub is the public projection: private topology never enters its issues, PRs or metadata."
+
+  # ── Gitea / Forgejo Platform Operations ───────────────────
+  - type: vcs-forge
+    label: "Self-hosted forge operations (Gitea / Forgejo)"
+    indicators:
+      - gitea api
+      - gitea pr
+      - act_runner
+      - gitea actions runner
+      - forgejo
+      - forgejo migration
+      - 自建 git
+      - gitea release
+      - webhook management
+      - object storage migration
+      - protected branch api
+    skills:
+      - name: astra-vcs-assist
+        path: references/forge/platform/SKILL.md
+    principles: "Forgejo is a hard fork of Gitea whose REST API stays compatible, so one curl recipe serves both; the differences are deployment-level (workflow dirs, token env names, image and env prefixes). Private forge holds real topology — operate with a repository-scoped token, and reach the self-hosted cert with http.version=HTTP/1.1 on push."
+
+  # ── Published-history rewriting ─────────────────────────
+  - type: vcs-history
+    label: "Published history rewriting and signing"
+    indicators:
+      - 重写历史
+      - rebase 全部提交
+      - filter-repo
+      - 抹掉术语
+      - unsigned commits
+      - authorship unclear
+      - squash before push
+    skills:
+      - name: astra-vcs-assist
+        path: references/history/signing/SKILL.md
+    principles: "Decide the disclosure level before touching history, not after: the clip is the plan. Verify signature and authorship of every commit that will become public, and never rewrite a pushed branch without the owner's explicit word."
+
+  # ── GitHub credential lifecycle ─────────────────────────
+  - type: github-pat
+    label: "GitHub PAT lifecycle"
+    indicators:
+      - github token
+      - PAT scope
+      - rotate token
+      - revoke token
+      - fine-grained token
+    skills:
+      - name: astra-vcs-assist
+        path: references/github/pat/SKILL.md
+    principles: "Tokens are minted by a human in the web UI; an agent never accepts a token in chat and never widens a scope on its own."
+
+  # ── GitHub dependency automation ────────────────────────
+  - type: github-dependabot
+    label: "Dependabot, auto-merge and PR-title gates"
+    indicators:
+      - dependabot
+      - auto merge
+      - pr title lint
+      - npm audit
+      - version bump pr
+    skills:
+      - name: astra-vcs-assist
+        path: references/github/dependabot/SKILL.md
+    principles: "Automation may open and merge PRs; the version label it may write is bounded by policy, and every auto-merge needs a green CI proof, not a green button."
+
+  # ── Issue to verified PR ────────────────────────────────
+  - type: github-issue-to-pr
+    label: "Carry a GitHub issue to a verified PR"
+    indicators:
+      - 关掉这个 issue
+      - issue to pr
+      - 提 PR 关联 issue
+      - closes #
+    skills:
+      - name: astra-vcs-assist
+        path: references/github/issue-to-pr/SKILL.md
+    principles: "The PR is not done until the CI state and the verification are reported honestly; no fabricated 'uploaded/written' claims."
+
+  # ── Remote authentication diagnosis ─────────────────────
+  - type: git-remote-auth
+    label: "Remote authentication failures"
+    indicators:
+      - could not read Username
+      - permission denied
+      - auth fails
+      - credential helper
+      - token rejected
+    skills:
+      - name: astra-vcs-assist
+        path: references/git/remote-auth/SKILL.md
+    principles: "Establish which credential path the remote actually consulted before changing anything; never hand a token to a prompt on someone else's behalf."
+  # ── Forge migration ─────────────────────────────────────
+  - type: forge-migration
+    label: "Gitea to Forgejo in-place migration"
+    indicators:
+      - gitea to forgejo
+      - migration version newer
+      - schema version error
+      - act_runner setup
+    skills:
+      - name: astra-vcs-assist
+        path: references/forge/migration/SKILL.md
+    principles: "Migration is an INFRA event: back up the database, read the schema version before touching binaries, and never run it on a forge the fleet depends on without a restore path proven."
+  # ── History rewriting (full procedure) ──────────────────
+  - type: vcs-history-reorg
+    label: "Rewrite published history end to end"
+    indicators:
+      - 重写整个历史
+      - 清除历史中的术语
+      - filter-repo 全流程
+      - 历史里的凭据
+      - purge from every commit
+    skills:
+      - name: astra-vcs-assist
+        path: references/history/reorg/SKILL.md
+    principles: "Decide the disclosure plan before the first rewrite commit; prove base equivalence; propagate to every clone and pin in the same pass."
+  # ── Upstream contribution ───────────────────────────────
+  - type: github-upstream
+    label: "Carry a fix to an upstream repository"
+    indicators:
+      - 向上游提 PR
+      - upstream contribution
+      - fork a repo to fix upstream
+      - contribution purity
+    skills:
+      - name: astra-vcs-assist
+        path: references/github/upstream/SKILL.md
+    principles: "An upstream PR describes the upstream bug and the fix only: no fleet devices, no orchestrator integration, no deployment environment. Private topology never reaches a public forge."
+  # ── Seed from upstream ──────────────────────────────────
+  - type: vcs-seed-from-upstream
+    label: "Independent repo seeded from an upstream"
+    indicators:
+      - seed from upstream
+      - 孤儿根
+      - orphan root
+      - 非 fork 派生
+      - rename audit upstream
+    skills:
+      - name: astra-vcs-assist
+        path: references/git/seed-from-upstream/SKILL.md
+    principles: "An orphan root severs the graph, not the obligation: prune the upstream's baggage, strip reference chains, and audit the rename — an inherited name is a leak the compiler will not catch."
