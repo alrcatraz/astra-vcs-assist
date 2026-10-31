@@ -37,7 +37,7 @@ enumerated cases.
 ```
 L0  authority    BASE + PATCH + ADAPT + INFRA   (dev copy — full tower; real values intact)
 L1  private      BASE + PATCH + ADAPT + INFRA   (the private trust tier: INFRA intact,
-                  ADAPT left concrete so a fleet consumer pulls and fills in only its
+                  ADAPT left concrete so a team consumer pulls and fills in only its
                   own machine's values; neutralising ADAPT is the repo's content choice,
                   not the level's requirement — see trust-level-verification §3)
 L2  sanitised    BASE + PATCH (+ ADAPT as the repo neutralised it at L1, or none)
@@ -67,15 +67,15 @@ Each remote declares `L<n>` plus optional pins:
 
 - **Ask for every level — never infer one.** A level is a content decision, not a
   platform fact: self-hosted may sit anywhere (L0 when it holds real values the
-  fleet consumes as-is, L2 when cleaned), and a GitHub *private* repo may qualify
+  team consumes as-is, L2 when cleaned), and a the public remote *private* repo may qualify
   as L1. At project creation and at every added remote, ask which level that remote
   takes — and before relabelling an existing remote, measure its content first
   (hostnames, machine paths, private IPs, credential refs), state the inventory,
   and let the owner decide. The published declaration must match what is actually
   pushed, not what sounds tidy. Full method:
-  `references/trust-level-verification.md` (this repo).
+  `trust-level-verification.md` (this repo).
 - **Monotonicity**: any remote may sit at any level ≤ L0; skipping levels is
-  fine (a public GitHub at L3 while Gitea sits at L2).
+  fine (a public the public remote at L3 while the private remote sits at L2).
 - **Superset invariant**: content published to L<i+1> must already exist at
   L<i>. A more-disclosed remote must NEVER carry what a less-disclosed one
   lacks. Verify per release with a tree diff whose allowed deltas are exactly
@@ -91,7 +91,7 @@ Each remote declares `L<n>` plus optional pins:
   automatically synchronised upward.
 
 Pre-push procedure follows directly from the level: **L0 push as-is; L1 —
-check ADAPT against the intent test** (`references/trust-level-verification.md` §3):
+check ADAPT against the intent test** (`trust-level-verification.md` §3):
 keep concrete values when the remote's consumers pull the repo and fill in only
 their own machine's differences, neutralise them when the remote's audience must
 not learn reader-specific topology — L1's definition itself mandates no clip; **L2
@@ -116,8 +116,8 @@ naturally, not a special case bolted onto it.
   skips it automatically via patch-id → the patch retires.
 - **Following upstream**: `git rebase --onto upstream/vNEW upstream/vOLD <dist>`;
   INFRA lands back on top by itself, conflicts surface only in the PATCH layer.
-- Platform-side PR mechanics: see `astra-vcs-assist-git-fork` and its
-  `references/upstream-pr-from-selfhosted-git.md`.
+- Platform-side PR mechanics: see `this repository` → `references/git/fork/` and its
+  `git/fork/references/upstream-pr-from-selfhosted-git.md`.
 
 #### The same-name trap (recurring misreasoning — settle the base before proposing it)
 
@@ -152,20 +152,20 @@ relationship between two assigned levels; they are not properties of remotes:
 |:----------|:---------------|:-----------------|:-------------|
 | identical (mirror/DR) | same level + explicit `mirror-of` pin | whole slice, ref-by-ref (branches + tags follow in full); divergence is an incident | git-sync §2 |
 | divergent | same or different level, **no** mirror pin | independent edit rights; push only what that remote's level discloses | git-sync §0 decision table |
-| disclosure | adjacent levels across a public boundary (typically L1/L2 → L3) | clip per the level definition: neutralise ADAPT, then strip INFRA (the §1.1 ladder order — values first, config second); human-triggered at release time, never automatic; when history contains unclippable private traces, rebuild the projection history via squash/filter-repo — pushing the raw tower is forbidden | versioning «Three-Layer Content Architecture» + «Content classification for public» (its sanitisation checklist and diff-verification method are authoritative) |
+| disclosure | adjacent levels across a public boundary (typically L1/L2 → L3) | clip per the level definition: neutralise ADAPT, then strip INFRA (the §1.1 ladder order — values first, config second); human-triggered at release time, never automatic; when history contains unclippable private traces, rebuild the projection history via squash/filter-repo — pushing the raw tower is forbidden | versioning «Three-Layer Content Architecture» + «Content classification for public» (its sanitisation checklist and diff-verification method are authoritative); for deciding which content belongs at the target level, `prose-artefact-layer-attribution.md` |
 
 Two assignment pitfalls that produced real misclassifications:
 
 1. **Shared ownership ≠ same level.** Two remotes under one account can sit at
    different levels (one internal-mirror, one public-facing). Equality exists
    only when declared via `mirror-of`.
-2. **A platform's usual role ≠ this repo's level.** "GitHub is always the
+2. **A platform's usual role ≠ this repo's level.** "the public remote is always the
    public projection" is folklore, not a rule; some repos genuinely publish the
    identical slice everywhere (the collapsed-ladder case of §1.1 — zero pre-push
    work). Read the repo's AGENTS.md declaration, never infer from forge brand.
 
-One project may carry several relationships simultaneously (e.g. Gitea↔GitHub
-backup = mirror-pinned, Gitea↔upstream = Projection A, public release repo =
+One project may carry several relationships simultaneously (e.g. the private remote↔the public remote
+backup = mirror-pinned, the private remote↔upstream = Projection A, public release repo =
 L3 clip) — **judge each pair independently, stack the rules**.
 
 **Conflict arbitration**: if a remote is declared both `mirror-of X` and at a
@@ -177,8 +177,8 @@ bets that INFRA never errs).
 
 **Naming rule (reconciled with the three-tier branch model):** `<dist>` is a
 *role*, not a name — its default landing name is `main` (or legacy `master`),
-exactly as branch-protection-model.md requires for every astra-ecosystem repo.
-A fork may give `<dist>` an alternative name (fleet instances: `astra`) only to
+exactly as branch-protection-model.md requires for every the organisation repo.
+A fork may give `<dist>` an alternative name (team instances: `astra`) only to
 disambiguate it from an upstream `main` that also lives in the same repo; such
 a rename is a per-repo fact and must be declared in that repo's AGENTS.md.
 Repos without an upstream have no reason to deviate from `main`.
@@ -214,8 +214,8 @@ adapting a community PR. The prefix tells you whose repo the branch is in:
 
 **A projection is a branch, never a directory.** Multi-remote and upstream
 content differences are expressed by *clipping a branch* (§1.1) and pushing it
-to the target remote — not by maintaining a `github/` vs `gitea/` copy of the
-tree. Per-remote *directories* (as in `gitea/` or `github/` folders holding
+to the target remote — not by maintaining a `the public remote/` vs `the private remote/` copy of the
+tree. Per-remote *directories* (as in `the private remote/` or `the public remote/` folders holding
 platform skills) are unrelated: those are skill/tool organisation, not
 projection artefacts, and must never be mistaken for where a remote's content
 lives.
@@ -225,7 +225,7 @@ lives.
 1. INFRA commits always carry a `ci(<tool>):` prefix, everything else uses
    conventional commits — layer membership is recognisable at a glance.
 2. INFRA files live only at paths the projection target does not have
-   (`ci/`, `.gitea/`, `packaging/`…) — contamination becomes visible instantly.
+   (`ci/`, `.the private remote/`, `packaging/`…) — contamination becomes visible instantly.
 3. Projections are always cherry-pick/replay, **never merge** (merge drags
    ancestral INFRA across the boundary).
 
@@ -234,7 +234,7 @@ lives.
 ① Is there an upstream? → decides whether BASE is empty and whether
 Projection A exists
 ② What level does each remote sit at (L0–L3, §1.1)? → record per-remote
-declarations `gitea: L2`, `github: L3 mirror-of gitea` etc. in AGENTS.md;
+declarations `the private remote: L2`, `the public remote: L3 mirror-of the private remote` etc. in AGENTS.md;
 adjacent levels across a public boundary are Projection-B clip candidates
 ③ Must two remotes be byte-identical? → yes = declare the `mirror-of` pin;
 no = independent editors (must state the reason, otherwise treat it as debt)
