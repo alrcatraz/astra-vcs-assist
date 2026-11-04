@@ -49,6 +49,7 @@ astra-vcs-assist (macro skill)
     ├── history/signing/           published-history rewriting
     ├── versioning/layers/         layer scheme + dual-branch release
     └── tower-model.md · branch-protection-model.md · trust-level-verification.md
+        prose-artefact-layer-attribution.md · fleet-naming.md · skill-edit-sync.md
 ```
 
 Load a block by path — blocks are not registered skills:
