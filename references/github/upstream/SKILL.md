@@ -756,6 +756,7 @@ git push -u fork feat/my-feature
 Identify the remotes before pushing (`git remote -v`): the remote your branch
 TRACKS (from `git rev-parse --abbrev-ref @{u}`) is often upstream, not the fork.
 
+```bash
 Or if already tracking, force push after rebase
 git push --force-with-lease fork feat/my-feature
 ```

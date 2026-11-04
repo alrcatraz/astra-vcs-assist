@@ -30,6 +30,7 @@ agent context for the repo; keep it current with `references/tower-model.md`.
   - `github : L3` — public sanitised projection (disclosure clip of Gitea main)
 - **GitHub must never contain what Gitea lacks.** Direction is one-way for
   content; verify per release with a tree diff between the private and public
+  lines — allowed diffs are only: the `references/forge/` pillar, instance-specific domain lines,
   version suffixes, private-architecture docs. Any other diff is a leak — stop
   and fix.
 - Instance facts (private forge domains like `your-forge.example.com`,
@@ -100,6 +101,7 @@ feat/* · fix/* ──merge──▶ development ──PR──▶ main ──ta
 
 ```
 README.md                      # "This instance" sections (EN + ZH summary)
+references/forge/**          # platform skill, private-forge by nature
 versioning/**                  # documents this repo's own dual-branch layout
 references/git-credentials.md  # example URLs incl. private forge host — REVIEW BEFORE PUBLIC PUSH;
                                # prefer generic placeholders in the public projection
