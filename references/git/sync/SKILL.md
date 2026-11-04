@@ -386,14 +386,32 @@ printf "protocol=https\\\\nhost=github.com\\\\nusername=user\\\\npassword=%s\\\\
 
 ### One-shot credential injection
 
-For a single push without config changes:
+For a single push without config changes — the way to push when the machine
+holds several accounts and only one is active:
 
 ```bash
-TOKEN=$(gpg ... --decrypt ... 2>/dev/null | head -1)
+TOKEN=$(gh auth token --user <owning-account>)      # or decrypt from the store
 GIT_TERMINAL_PROMPT=0 \
-  git -c credential.helper="!f() { echo username=user; echo password=$TOKEN; }; f" \
+  git -c credential.helper= \
+  -c credential.helper="!f() { echo username=<owning-account>; echo password=$TOKEN; }; f" \
   push origin main
 ```
+
+Three properties of this shape, each of which fails silently when missing:
+
+- **Reset the chain first** with the empty `-c credential.helper=` and put the
+  injecting helper after it. Helpers run in order, so a stored entry for another
+  account answers before yours is consulted, and the push comes back as
+  `Permission to <owner>/<repo>.git denied to <other-account>` — a
+  resolution-order symptom, not a lost or under-scoped credential.
+- **Quote the helper body in double quotes.** In `'!f() { … $TOKEN … }'` the body
+  reaches git verbatim and is evaluated later in the helper's own subshell, where
+  `TOKEN` is unset unless exported: the server answers `Invalid username or
+  token`, which reads as a bad token and is actually an empty one.
+- **Never solve a multi-account 403 by switching, deleting or re-authorising
+  credentials** (`gh auth switch`, dropping stored entries, rewriting the remote
+  URL into `user:token@host` form). Those change global state to fix one command;
+  one-shot injection leaves nothing to restore.
 
 `GIT_TERMINAL_PROMPT=0` prevents git from falling back to an interactive
 password prompt (which would hang in headless environments).
@@ -435,7 +453,26 @@ echo "protocol=https\\nhost=github.com\\n\\n" | \
 ```bash
 # Check remote reachability
 curl -s -o /dev/null -w "%{http_code}" https://github.com
+```
 
+**A host that fails, fails for every repository on it.** When `git ls-remote`
+returns nothing or dies with `GnuTLS, handshake failed: The TLS connection was
+non-properly terminated`, do not conclude that this repository was renamed or
+its path is gone — re-read a second repository under the same host before
+attributing anything to repo state:
+
+```bash
+git -C <another-repo-on-the-same-host> ls-remote --heads origin   # both fail => host path is down
+```
+
+The symptom is the same as a missing repo (`no refs`, empty output), which is why
+it gets misdiagnosed that way. A forge reached through an overlay network also
+fails intermittently while the tunnel is re-establishing, so retry once before
+drawing conclusions, then fail over to the next address family for that host
+per the access ladder (domain → overlay IP → LAN IP) rather than reporting the
+repository as broken.
+
+```bash
 # If behind a proxy:
 git config http.proxy http://127.0.0.1:7890
 git config https.proxy http://127.0.0.1:7890
@@ -496,3 +533,7 @@ git log --oneline mirror/main..HEAD
 10. **Emergency unlock is a 3-step SOP, not a hack: DELETE rule → force push → re-POST/PUT.** Reserve it for genuine emergencies (sensitive leak needing history rewrite). Deleting the rule is the only clean way to force a protected branch back; re-creating it belongs in the SAME action — a rule deleted for cleanup and forgotten leaves `main` wide open. Verify with a rejection probe after restoring.
 
 11. **Verifying two independent remotes: read back each ref with `git ls-remote <remote> refs/heads/...`, never trust the push echo.** The push line proves transport, not final state — especially after force-pushes and re-tags. Compare `gitea`, `github`, and local SHAs side by side and require all three to match before calling a dual-push done.
+
+12. **`remote rejected … pre-receive hook declined` on a protected branch is a workflow, not an obstacle.** Read the rule (`GET /repos/<o>/<r>/branch_protections`, and its `required_approvals`/`enable_push`), then take the PR path it asks for. Merge with `Do: fast-forward-only`: an ordinary merge commit is created by the forge and lands on the protected branch **unsigned**, undoing every signature prepared for the branch. Delete the throwaway branch ref afterwards, and reserve rule deletion (pitfall 10) for genuine leaks.
+
+13. **A force push that authenticated as the wrong account reports the 403, not a refusal.** On a multi-account machine, `--force-with-lease` failing usually means the credential chain resolved another identity — often because the helper injection was omitted from that one invocation while present in the previous. Re-read the remote head with `git ls-remote` after every force push: the mismatch proves the rewrite never landed, whatever the command printed.

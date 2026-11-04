@@ -19,7 +19,7 @@ The same sentence gets different answers per level, and that is the point:
 
 | Content | L0 · L1 (authority / private) | L3 (public) |
 |:--|:--|:--|
-| Fleet deployment specifics (own subnets, node names, service ports) | belongs — the team consumes it | does not belong — meaningless to a generic reader |
+| Fleet deployment specifics (own subnets, node names, service ports) | belongs — the fleet consumes it | does not belong — meaningless to a generic reader |
 | A commit signature / author field | belongs — provenance metadata | belongs — provenance metadata |
 | A concrete value inside a generic example (a sample IP in a YAML template) | belongs as a concrete value | belongs, but **generalised** to a placeholder |
 
@@ -60,7 +60,7 @@ Procedure:
    pointer to a passage, never a unit of work.
 2. **Walk the passage and ask of each segment**: should this be at the target
    level? A file is usually **mixed** — generic method in one section,
-   team-bound specifics in another — so the verdict is taken per segment, not
+   fleet-bound specifics in another — so the verdict is taken per segment, not
    per file.
 3. **Apply the verdict** — remove / generalise / keep, per §2.
 4. **Re-read the result as a reader at the target level**: does it still read
@@ -77,7 +77,7 @@ Procedure:
 The pass is not a release-only activity — content that enters out-of-level is
 easier to stop at the point of writing than to clip later. It applies at every
 stage of the artefact lifecycle (create / maintain / release / archive); the
-stage-by-stage hooks are listed in `this repository` → `references/git/init/` («The AGENTS pair
+stage-by-stage hooks are listed in `astra-vcs-assist` → `references/git/init/` («The AGENTS pair
 across the git lifecycle») and, for skills, in `skill-ecosystem` (its
 create/update/archive gates).
 
@@ -114,7 +114,7 @@ rule* it follows:
   addresses and subnets, service ports, machine names, credential references or
   entry names. These leak reader-specific topology. At L3 they are either
   generalised (when the surrounding text is a generic example) or removed (when
-  the surrounding text is team-bound narrative).
+  the surrounding text is fleet-bound narrative).
 - **INFRA-shaped** — environment-bound plumbing described in prose: how *our*
   CI runs, *our* deploy layout, *our* service inventory, maintenance history.
   Stripped at L2, removed at L3.
@@ -166,7 +166,7 @@ remember editing:
 5. **Clipping the tip only.** Tags, PR refs and merge-introduced content
    survive a branch-only clip (§6).
 6. **Assuming a file-level declaration covers its later growth.** A declared
-   generic file that gains a team-bound paragraph is a leak the declaration
+   generic file that gains a fleet-bound paragraph is a leak the declaration
    conceals; the per-segment pass is what catches it.
 
 ## The disclosure judgement pass (folded in from the reorg block)
@@ -221,7 +221,7 @@ that should have been removed, and it generalises metadata that should have been
 1. **Read the whole record first** — the entire file; for a commit, subject *and* body,
    before deciding anything. A grep hit is a pointer to a passage, never a unit of work.
 2. **Walk it passage by passage.** A file is usually **mixed** — generic method in one
-   section, team-bound specifics in another — so the verdict is per segment, never per file.
+   section, fleet-bound specifics in another — so the verdict is per segment, never per file.
 3. **Apply the verdict** (remove / generalise / keep).
 4. **Re-read as a reader at the target level.** Does it still read as a coherent document,
    and does any surviving sentence presuppose something now removed? A removal that leaves a
@@ -257,7 +257,7 @@ has no such structure, so map each passage onto the layer whose *clip rule* it f
 
 | Shape | Content | Treatment |
 |:--|:--|:--|
-| **ADAPT** | Localisation that varies per deployment: hostnames, private addresses and subnets, service ports, machine names, credential references and vault entry names | L3: generalise when the surrounding text is a generic example; **remove** when it is team-bound narrative |
+| **ADAPT** | Localisation that varies per deployment: hostnames, private addresses and subnets, service ports, machine names, credential references and vault entry names | L3: generalise when the surrounding text is a generic example; **remove** when it is fleet-bound narrative |
 | **INFRA** | Environment-bound plumbing described in prose: how *our* CI runs, *our* deploy layout, *our* service inventory, maintenance history | stripped at L2, removed at L3 |
 | **PATCH** | The substantive portable content: the method, the mechanism, the fix | survives at every level — this is what the artefact exists to deliver |
 | **Provenance** | Signatures, author fields, licence notices | not clipped at any level; editing one is a defect |
@@ -287,7 +287,7 @@ affected definitions and let the owner correct the model rather than forcing a f
 6. **Clipping the tip only.** Tags, PR refs and merge-introduced content survive a
    branch-only clip.
 7. **Assuming a file-level declaration covers later growth.** A declared-generic file that
-   gains a team-bound paragraph is a leak the declaration conceals; only the per-segment
+   gains a fleet-bound paragraph is a leak the declaration conceals; only the per-segment
    pass catches it.
 8. **Judging only at release time.** Attribution is not a release-only pass — content that
    enters out-of-level is cheaper to stop at the point of writing than to clip later. Run the
@@ -302,7 +302,7 @@ affected definitions and let the owner correct the model rather than forcing a f
 
 Verify what will be published, not the files you remember editing:
 
-- **Sweep the projected tree** with `scripts/scan-tracked-values.py` (in `this repository`),
+- **Sweep the projected tree** with `scripts/scan-tracked-values.py` (in `astra-vcs-assist`),
   run on the tree about to be pushed rather than on the source.
 - **All refs, all reachable objects.** A tag, an unmerged PR ref, or a branch tip from before
   the clip still serves the old bytes; a clean tip can still disclose through `refs/tags/*`

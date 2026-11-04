@@ -83,6 +83,32 @@ see skill `repo-language-convention`, its
 Check which account a given email resolves to before choosing, rather than after
 the rewrite:
 
+### 1b. Measure the rewrite radius before choosing the method
+
+The offender's age decides the cost, and the cost has three parts. Measure them
+first — `scripts/measure-rewrite-radius.sh <repo-dir> [branch] [bad-email]`
+prints commits and merges in the replay range, how many signatures the rewrite
+invalidates, and whether the offender is a root commit.
+
+| Measured | Method |
+|:---------|:-------|
+| Offender at or near the tip, no merges, nothing signed downstream | `git rebase <first>^ -x 'git commit --amend --no-edit --author="…" -S'` |
+| Root offender, whole history mine, no merges | `git rebase --root -x '… -S'` |
+| Merges in range, or a stack of signed commits downstream | **Do not rewrite.** `.mailmap` plus pinned repo-local identity, and say plainly in the report which of the two you gave them |
+
+A plain rebase across merges silently rewrites the graph: forge PR merges become
+local merge commits carrying the same message and a different shape — the prose
+looks preserved while the history it describes is gone.
+
+When a rewrite is taken, back it up and prove it metadata-only:
+
+```bash
+git tag --no-sign backup/<purpose>-<date>      # backup tags are never signed
+…replay…
+git diff backup/<purpose>-<date> HEAD          # MUST be empty: any output means
+                                               # the rewrite moved content, not names
+```
+
 ### 2. Configure, then replay
 
 ```bash
@@ -209,7 +235,53 @@ every commit to B. That is legitimate but confusing in collaboration — decide
 deliberately, per repository class (personal handle for personal projects, real
 name for academic or organisation-facing ones).
 
+Whether the forge holds the public key can be proved without touching the branch
+that matters — push a signed empty commit on a throwaway branch, read the
+verdict, delete it:
+
+```bash
+git checkout -q -b key-probe && git commit -q --allow-empty -S -m "chore: probe signing key"
+git push origin key-probe
+GH_TOKEN=$(gh auth token --user <account>) gh api repos/<owner>/<repo>/commits/key-probe \
+  --jq '.commit.verification'          # {verified:true, reason:"valid"} = accepted
+git push origin --delete key-probe && git branch -D key-probe
+```
+
+Run this before a batch rewrite: `reason=unknown_key` means the public key was
+never uploaded, and the rewrite would hand back signed-but-unverified commits
+plus a second rewrite to undo it. `gh api user/gpg_keys` cannot serve as the
+check — listing keys needs the `admin:gpg_key` scope.
+
 ## Pitfalls
+
+- **The replacement identity comes from the remote's disclosure level, not from
+  what sibling repositories use.** A fleet or skills repo whose remote is a
+  public repository under the real-name account maps a stray tooling address to
+  the **public** identity; mapping it to the personal handle publishes a private
+  mailbox inside an L3 tree, so the rewrite meant to close a leak opens a worse
+  one. Establish visibility before choosing the target:
+  `curl -s -o /dev/null -w '%{http_code}' https://github.com/<owner>/<repo>`
+  answers 200 public, 404 private-or-absent, and still works when the API
+  endpoint itself is flaky.
+
+- **A rewrite reports success while corrupting signatures it never touched.**
+  Descendant commits whose objects git did not modify still carry the old
+  `gpgsig` header, which no longer covers the renumbered object: `%G?` flips to
+  `B`, which is harder to explain than unsigned. Re-sign every replayed commit
+  with `-S` in the same pass, then confirm the range reads `G` end to end before
+  pushing.
+
+- **`.mailmap` is attribution, not history.** It repairs `git log`, `shortlog`,
+  blame and the contributors graph; it does not change the author the forge
+  renders per commit. Choose it when the graph matters more than the display,
+  and say so instead of reporting the leak as closed.
+
+- **Several repositories in one session do not share an identity decision.** The
+  private convention (personal handle on the own forge) and the public one (real
+  name on GitHub) are each correct for their own remote, and a repo without local
+  identity takes whatever the global config holds at commit time. Sweep before
+  working: `git log --format='%ae' | sort | uniq -c` per repo, plus
+  `git config --local --get user.email` — empty means it is drifting.
 
 - **`gh api user/emails` returns 404** without the `user` scope; that is not a
   missing token. Use the commits API's `.author.login` and `.verification`

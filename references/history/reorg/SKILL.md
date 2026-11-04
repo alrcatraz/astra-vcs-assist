@@ -1557,6 +1557,45 @@ one copy over the other on your own initiative. The same divergence explains oth
 in such repos: the same file can hold different content on each side, so a tool showing
 "missing" content elsewhere may just be reading the other lineage.
 
+## Purging an identity or hostname from history
+
+Four traps, each hit in a real fleet-wide purge; all four cost a wasted run.
+
+1. **`filter-repo` blocks on a continuation prompt after any aborted run.** A
+   failed invocation leaves `.git/filter-repo/`; the next run asks "Treat this
+   run as a continuation of filtering in the previous run (Y/N)?" and dies with
+   `EOFError` under a non-interactive shell — leaving history untouched while
+   the script reports success. Fix: `rm -rf .git/filter-repo` and run with
+   `</dev/null`, and **never send filter-repo's stderr to /dev/null**: the
+   abort was invisible for a whole batch because of `>/dev/null 2>&1`, and the
+   "tree unchanged" check then passed vacuously (nothing had changed at all).
+2. **`filter-repo` removes the `origin` remote.** Re-add it before pushing, or
+   every push fails with a misleading "correct access rights" message because
+   the URL resolved to nothing.
+3. **`git rebase -r --root --exec 'git commit --amend -S'` duplicates commits**
+   on PR-merge topology: a 37-commit repo came back as 74, with trees and merge
+   counts per branch still equal — so a naive tree/merge check passes while the
+   log is polluted. Do not use rebase to add signatures to history.
+4. **`git filter-branch --commit-filter 'git commit-tree -S "$@"' -- --all`
+   preserves the DAG exactly** (same trees, same commit counts, same merge
+   counts) and signs every commit. Two caveats: it rewrites tags too, and
+   piping its output through `head` sends SIGPIPE and silently aborts the
+   rewrite. Clean `refs/original/*` afterwards or the repo carries a duplicate
+   set of refs (`git rev-list --count --all` then reports double).
+
+Serverside, distinguish the two read-only shapes before assuming a permissions
+bug: an **archived** repository rejects every push with a bare
+`403 ... requested URL returned error: 403` regardless of `admin: true`, while
+**branch protection** answers `remote: error: GH006: Protected branch update
+failed for refs/heads/main` and names the ref. And a repo's own `pre-push`
+hook refusing to push a private branch to a public remote is working as
+designed — not a failure to fix.
+
+Before rewriting, record what must survive: per-branch tree hash, commit count
+and merge count, plus `git ls-remote --heads <url>` as the rollback facts.
+`filter-repo` drops GPG signatures on everything it rewrites; state that cost
+before starting, and sign in a second pass with the method above.
+
 ## Grouping conventions (user preferences)
 
 - Minimal commit count — merge small commits into theme commits ("C5可以并入C0或C4，C2和C6可以合并").
