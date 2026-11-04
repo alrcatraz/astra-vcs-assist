@@ -1,7 +1,7 @@
 ---
 name: astra-vcs-seed-from-upstream
 description: Create an independent git repository seeded from an upstream source (orphan root technique). Not a fork, not a clone — clean git history starting from an upstream codebase.
-version: 1.1.0
+version: 1.1.0angelia.0.0.0
 author: alrcatraz
 triggers:
   - "seed from upstream"

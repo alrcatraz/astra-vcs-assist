@@ -1,7 +1,7 @@
 ---
 name: astra-vcs-assist
 description: "VCS workflow orchestrator — GPG key management, Git init, commit workflow, release management, and cross-machine sync. Routes to VCS-specific sub-skills by task type."
-version: 1.5.0
+version: 1.6.0
 author: <owner>
 triggers:
   - "git 工作流"
@@ -44,9 +44,10 @@ astra-vcs-assist (macro skill: one router body, knowledge in references/)
       ├── INDEX.md             ← pillar registry
       ├── gpg/                 ← VCS-independent key lifecycle
       │   ├── key-lifecycle/   (SKILL.md)
+      │   ├── signature-provenance/  (SKILL.md — signed but "Unverified")
       │   └── gpg-key-lifecycle.md
       ├── git/                 ← Git workflow blocks
-      │   ├── init/ dev/ fork/ review/ release/ sync/ remote-auth/
+      │   ├── init/ dev/ fork/ review/ release/ release-integrity/ sync/ remote-auth/
       │   ├── conventional-commits.md safe-force-push.md
       │   ├── git-bundle-sync.md dual-remote-push.md
       ├── github/              ← GitHub platform
@@ -58,7 +59,6 @@ astra-vcs-assist (macro skill: one router body, knowledge in references/)
       ├── versioning/          ← this repo's layer scheme + release line
       │   └── layers/
       ├── tower-model.md branch-protection-model.md trust-level-verification.md
-      └── prose-artefact-layer-attribution.md git-credentials.md
 ```
 
 ### Principles
@@ -81,6 +81,7 @@ Below is a summary for quick reference:
 | Task type | Delegate to |
 |:----------|:------------|
 | GPG key management (check, import, generate, rotate) | `skill_view(name='astra-vcs-assist', file_path='references/gpg/key-lifecycle/SKILL.md')` |
+| A signed commit still shows Unverified / pin identity per repo | `skill_view(name='astra-vcs-assist', file_path='references/gpg/signature-provenance/SKILL.md')` |
 | Repository init (README, LICENSE, gitconfig, GPG binding) | `skill_view(name='astra-vcs-assist', file_path='references/git/init/SKILL.md')` |
 | Daily dev workflow (branch, stage, commit, stash) | `skill_view(name='astra-vcs-assist', file_path='references/git/dev/SKILL.md')` |
 | Branch model / protection / CI gates / dual-forge push rules | `references/branch-protection-model.md` (in this skill) |
@@ -89,13 +90,12 @@ Below is a summary for quick reference:
 | Deciding which content belongs at the target level (the disclosure clip) | `references/prose-artefact-layer-attribution.md` (in this skill) |
 | Measuring what a repo actually carries (values / INFRA inventory) | `python3 scripts/scan-tracked-values.py` (in this skill) |
 | Release prep (squash, split, reword, tag, changelog) | `skill_view(name='astra-vcs-assist', file_path='references/git/release/SKILL.md')` |
+| Prove a release claim (version gate, lockfile, dual-remote trees, assets) | `skill_view(name='astra-vcs-assist', file_path='references/git/release-integrity/SKILL.md')` |
 | Fork & upstream adaptation (dual-remote fork, licensing, PR back) | `skill_view(name='astra-vcs-assist', file_path='references/git/fork/SKILL.md')` |
 | Pre-commit review pipeline | `skill_view(name='astra-vcs-assist', file_path='references/git/review/SKILL.md')` |
 | Push, sync, transfer (dual remote, force push, bundle) | `skill_view(name='astra-vcs-assist', file_path='references/git/sync/SKILL.md')` |
-| This repo's version scheme + dual-branch release | `skill_view(name='astra-vcs-assist', file_path='references/versioning/layers/SKILL.md')` |
 | Seeding an independent repo from an upstream (orphan root, rename) | `astra-vcs-assist` → `references/git/seed-from-upstream/` |
 | Remote auth fails / credential helper prompts / `could not read Username` | `skill_view(name='astra-vcs-assist', file_path='references/git/remote-auth/SKILL.md')` |
-| Migrating Gitea → Forgejo in place (schema version, runners) | `astra-vcs-assist` → `references/forge/migration/` |
 | GitHub PAT handling (mint, scope, rotate, revoke) | `skill_view(name='astra-vcs-assist', file_path='references/github/pat/SKILL.md')` |
 | Dependabot / auto-merge / PR-title gates on GitHub | `skill_view(name='astra-vcs-assist', file_path='references/github/dependabot/SKILL.md')` |
 | Carry a fix upstream (fork, purity rules, PR body, CI parity) | `astra-vcs-assist` → `references/github/upstream/` |
@@ -137,7 +137,6 @@ Git is the first supported VCS. Its sub-skills cover the full workflow:
 | Review | `astra-vcs-assist` → `references/git/review/` | Pre-commit diff review pipeline, static checks |
 | Release | `astra-vcs-assist` → `references/git/release/` | Commit reorganisation, message writing, tagging, changelog |
 | Sync | `astra-vcs-assist` → `references/git/sync/` | Push, force push, dual remote, git bundle |
-| Meta | `astra-vcs-assist` → `references/versioning/layers/` | Three-layer SemVer scheme + this repo's dual-branch release flow |
 
 ## SOUL Alignment
 
@@ -151,11 +150,25 @@ Git is the first supported VCS. Its sub-skills cover the full workflow:
 
 3. **Skill-edit sync gap — critical.** `skill_manage`/`patch` on a bridged path writes the **production** copy, not
    `~/Projects/`, so an edit can be silently discarded by the next sync. Every write goes to the dev copy and
-   commits there — an edit made through the bridged path lands in the production copy and is discarded by the next sync.
 4. **New VCS domains get their own directory.** Adding Mercurial support means creating `hg/` at the top level — not stuffing it into `git/`.
 
 5. **Shared scripts stay at root `scripts/`.** GPG-related scripts live in `scripts/` (not `gpg/scripts/`), because they're VCS-agnostic. Git-specific scripts live in `git/scripts/`.
 
-6. **`automated-gpg-commit-push` is the predecessor.** That skill (devops category) contains machine-specific credential tricks. Its generic GPG knowledge has been absorbed into `astra-vcs-assist` → `references/gpg/key-lifecycle/`. On that machine, load both — the old skill has machine-specific debugging notes.
+6. **Never lean on push-to-create.** Creating a repository is a deliberate act — the forge UI or
+   `POST /api/v1/user/repos` with the account credentials. Pushing into a path to see whether the
+   server materialises a repo turns an auditable action into a side effect, and a host that allows
+   it will happily create repositories for anyone who can push. Read `Cannot find repository` as
+   "create it first", never as "try the push anyway"; confirm a new repo with `git ls-remote`
+   before pushing content into it.
 
-7. **Credentials in GPG, never in skill text.** Password decryption always goes through `gpg --pinentry-mode loopback` or `gpg-preset-passphrase`. Never hardcode.
+7. **`automated-gpg-commit-push` is the predecessor.** That skill (devops category) contains machine-specific credential tricks. Its generic GPG knowledge has been absorbed into `astra-vcs-assist` → `references/gpg/key-lifecycle/`. On that machine, load both — the old skill has machine-specific debugging notes.
+
+8. **Credentials in GPG, never in skill text.** Password decryption always goes through `gpg --pinentry-mode loopback` or `gpg-preset-passphrase`. Never hardcode.
+
+9. **A `gpg-preset-passphrase` that "succeeds" may have done nothing.** It ships in the
+   `gnupg` version of its own build; when that build is newer than the `gpg` binary talking
+   to the agent (`/usr/libexec/gpg-preset-passphrase` 2.5.24 against gpg 2.5.21), the call
+   exits 0 and caches nothing — the signature then fails with `No pinentry`, which reads like
+   a missing agent rather than a version skew. Confirm with `KEYINFO` on the keygrip, and
+   when the agent has no cache entry, preset through the agent protocol itself:
+   `gpg-connect-agent "PRESET_PASSPHRASE <keygrip> -1 <hex-of-passphrase>" /bye`.

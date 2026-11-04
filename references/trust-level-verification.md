@@ -8,8 +8,8 @@ inherit it from a label.
 ## 1. When
 
 - Declaring a level for a newly created project or a newly added remote.
-- Re-labelling an existing remote (a `the private remote: L2` moved to another level, a
-  the public remote repo promoted from private to public, a level claimed from platform
+- Re-labelling an existing remote (a `gitea: L2` moved to another level, a
+  GitHub repo promoted from private to public, a level claimed from platform
   type).
 - Pre-push review of a repo whose stated level looks inconsistent with what it
   actually carries.
@@ -40,7 +40,7 @@ inherit it from a label.
 3. Derive the level from the result, in ladder order (values first, then
    INFRA, then identifiers — matching §1.1's clip sequence):
    - **L0** — the full tower, real values intact (dev copy / authority);
-   - **L1** — private tier: INFRA intact, ADAPT kept concrete for team consumers
+   - **L1** — private tier: INFRA intact, ADAPT kept concrete for fleet consumers
      (neutralise only if the repo's consumers need it — the intent test, §3);
    - **L2** — INFRA stripped (ADAPT neutralised at L1 only if the repo chose to; otherwise neutralise it here for cross-org exchange);
    - **L3** — private identifiers stripped + clean leak grep.
@@ -48,7 +48,7 @@ inherit it from a label.
    — L0 is reserved for the authority/dev copy; a remote carrying that same
    content declares L1 (the intent test, §3 decides the rest); (b) real values
    present does **not** by itself mean L0 — a repo that deliberately keeps ADAPT
-   concrete for its team also sits at L1.
+   concrete for its fleet also sits at L1.
 4. Compare against the AGENTS.md declaration. A mismatch is a **finding**, not
    an obstacle — report the inventory and let the owner decide whether the
    declaration, the content, or the taxonomy is wrong.

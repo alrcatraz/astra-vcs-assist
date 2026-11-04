@@ -39,6 +39,23 @@ routing:
         path: references/gpg/key-lifecycle/SKILL.md
     principles: "Check existing keys first. Never hardcode passphrases. See gpg-key-lifecycle.md for algorithm choices."
 
+  # ── Signature provenance ──────────────────────────────────
+  - type: gpg-signature-provenance
+    label: "Signed but the forge says Unverified"
+    indicators:
+      - commit shows unverified
+      - 签名未验证
+      - signature unverified
+      - committer vs author
+      - forge verification flag
+      - gh api verification
+      - pin identity per repository
+      - signed tag unverified
+    skills:
+      - name: astra-vcs-assist
+        path: references/gpg/signature-provenance/SKILL.md
+    principles: "A forge verifies against the COMMITTER's account and attributes to the AUTHOR's. A byte-perfect signature still fails when the committer is synthetic — web-merge commits can never verify. Never move a persona or rewrite history to chase a badge."
+
   # ── Repository Init ───────────────────────────────────────
   - type: vcs-init
     label: "Repository initialisation"
@@ -108,6 +125,25 @@ routing:
       - name: astra-vcs-assist
         path: references/git/release/SKILL.md
     principles: "Never rebase pushed commits without force-push consent. Verify SemVer bump type before tagging."
+
+  # ── Release integrity (is the claim true?) ────────────────
+  - type: vcs-release-integrity
+    label: "Proving a release claim"
+    indicators:
+      - release integrity
+      - 发版核对
+      - version above highest tag
+      - lockfile out of sync
+      - npm ci missing from lock file
+      - dual remote release
+      - compare trees not shas
+      - release assets missing
+      - retroactive tag
+      - queued build not released
+    skills:
+      - name: astra-vcs-assist
+        path: references/git/release-integrity/SKILL.md
+    principles: "A release claim is proven by reading the remote and the artefacts back, never by the command's success message: highest existing tag first, regenerate lockfiles with the pinned package manager, compare trees across forges, and read the Release asset list with sizes."
 
   # ── Push / Sync / Transfer ────────────────────────────────
   - type: vcs-sync
