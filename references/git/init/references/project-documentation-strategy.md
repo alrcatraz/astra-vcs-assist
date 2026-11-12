@@ -1,6 +1,6 @@
 # Project Documentation Strategy
 
-> Reference for `astra-vcs-assist` → `references/git/init/` section 8.
+> Reference for `astra-vcs-assist` → `references/git/init/SKILL.md` section 8.
 > Updated 2026-07-25 — added README vs Wiki distinction.
 
 Decide what documentation approach fits a project **before** the first

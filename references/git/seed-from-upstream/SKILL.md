@@ -1,7 +1,7 @@
 ---
 name: astra-vcs-seed-from-upstream
 description: Create an independent git repository seeded from an upstream source (orphan root technique). Not a fork, not a clone — clean git history starting from an upstream codebase.
-version: 1.1.0angelia.0.0.0
+version: 1.1.0
 author: alrcatraz
 triggers:
   - "seed from upstream"
@@ -277,7 +277,7 @@ at `~/.hermes/skills/astra-vcs-seed-from-upstream/references/`.dapt for new proj
 cached, so a signing setup that was working starts failing; and the same agent
 backs `pass` (the git credential helper) and GCM, so pushes and vault reads
 break with it — three unrelated-looking failures from one command. Deep load
-`astra-vcs-assist` → `references/gpg/key-lifecycle/` for the recovery script.
+`astra-vcs-assist` → `references/gpg/key-lifecycle/SKILL.md` for the recovery script.
 
 ### 6. First commit
 
@@ -333,7 +333,7 @@ risk of bugs.
 
 - **GPG passphrase in headless CI:** Use `gpg-preset-passphrase` with
   the key's keygrip. Keygrip = `gpg -K --with-keygrip | grep Keygrip`.
-  See `skill astra-vcs-assist → `references/gpg/key-lifecycle/` for full GPG lifecycle.
+  See `skill astra-vcs-assist → `references/gpg/key-lifecycle/SKILL.md` for full GPG lifecycle.
 
 ---
 

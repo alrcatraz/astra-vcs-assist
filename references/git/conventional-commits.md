@@ -1,7 +1,7 @@
 # Conventional Commits Reference
 
-> Companion reference for `astra-vcs-assist` → `references/git/dev/` and
-> `astra-vcs-assist` → `references/git/release/` sub-skills. Full specification
+> Companion reference for `astra-vcs-assist` → `references/git/dev/SKILL.md` and
+> `astra-vcs-assist` → `references/git/release/SKILL.md` sub-skills. Full specification
 > at [conventionalcommits.org](https://www.conventionalcommits.org/).
 
 ## Specification

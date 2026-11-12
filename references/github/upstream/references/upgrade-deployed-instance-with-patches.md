@@ -4,7 +4,7 @@ Use when a production host runs a copy of the upstream project AND carries local
 patches — some of which are still-UNMERGED upstream PRs. This is the execution
 recipe for landing an upstream fix on that host (or refreshing the host wholesale).
 
-Companion to SKILL.md §Step 0 ("is the fix already upstream?"): once that check
+Companion to SKILL.md  0 ("is the fix already upstream?"): once that check
 tells you the fix exists upstream, this is how you get it onto the host without
 losing the local work.
 

@@ -83,7 +83,7 @@ one commit onto a fresh branch from current main:
 ```bash
 git fetch upstream main
 # Check the clone isn't shallow first — shallow clones make merge-base lie
-# (see multi-pr-review-and-rebase-repair.md §0d: unrelated-histories false
+# (see multi-pr-review-and-rebase-repair.md : unrelated-histories false
 #  positive, whole-tree diff instead of feature diff)
 git rev-parse --is-shallow-repository   # true → git fetch upstream main --unshallow first
 git checkout -b pr/<graft> upstream/main
@@ -108,7 +108,7 @@ the import/re-export area, one for the function bodies:
 After resolving: `py_compile` each touched file, verify import chains
 (`grep _SYMBOL <new_module>` for every symbol the old file still imports), and
 run the project's canonical test runner (`scripts/run_tests.sh`, NOT
-direct `.venv/bin/pytest` — see SKILL.md §4.1a) on the touched test files before
+direct `.venv/bin/pytest` — see SKILL.md ) on the touched test files before
 `cherry-pick --continue`.
 
 **`git commit --amend -S --no-edit` keeps the OLD message — including any word

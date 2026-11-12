@@ -1,6 +1,6 @@
 # GPG Key Lifecycle Reference
 
-> Companion reference for `astra-vcs-assist` → `references/gpg/key-lifecycle/` sub-skill.
+> Companion reference for `astra-vcs-assist` → `references/gpg/key-lifecycle/SKILL.md` sub-skill.
 > Covers key generation algorithms, keygrip mechanics, gpg-agent configuration,
 > and backup strategies in more depth than the sub-skill itself.
 
