@@ -109,11 +109,11 @@ Each segment (`<owner>`, agent name) carries a 1–3 digit version (`Z`), increm
 
 | Sub-skill | Covers |
 |:----------|:-------|
-| `astra-vcs-assist` → `references/gpg/key-lifecycle/` | Check, import, generate GPG keys; configure for VCS signing; headless passphrase caching |
-| `astra-vcs-assist` → `references/git/init/` | README, LICENSE analysis, gitconfig, GPG binding, remote setup, first commit |
-| `astra-vcs-assist` → `references/git/dev/` | Branch, stage, commit, stash during active development |
-| `astra-vcs-assist` → `references/git/release/` | Commit reorganisation, message writing, tagging, changelog |
-| `astra-vcs-assist` → `references/git/sync/` | Dual-remote push, safe force push, git bundle |
+| `astra-vcs-assist` → `references/gpg/key-lifecycle/SKILL.md` | Check, import, generate GPG keys; configure for VCS signing; headless passphrase caching |
+| `astra-vcs-assist` → `references/git/init/SKILL.md` | README, LICENSE analysis, gitconfig, GPG binding, remote setup, first commit |
+| `astra-vcs-assist` → `references/git/dev/SKILL.md` | Branch, stage, commit, stash during active development |
+| `astra-vcs-assist` → `references/git/release/SKILL.md` | Commit reorganisation, message writing, tagging, changelog |
+| `astra-vcs-assist` → `references/git/sync/SKILL.md` | Dual-remote push, safe force push, git bundle |
 
 ## Quick Start
 
@@ -272,11 +272,11 @@ Agent 版：1.0.0+<owner>.1.<agent>.1    （在个人版之上叠加 agent 信�
 
 | 子技能 | 功能 |
 |:-------|:-----|
-| `astra-vcs-assist` → `references/gpg/key-lifecycle/` | GPG 密钥检查、导入、生成；VCS 签名配置；免交互密码缓存 |
-| `astra-vcs-assist` → `references/git/init/` | README、LICENSE 分析、gitconfig、GPG 绑定、远程配置、首次提交 |
-| `astra-vcs-assist` → `references/git/dev/` | 开发中的分支、暂存、提交、贮藏管理 |
-| `astra-vcs-assist` → `references/git/release/` | 提交重新组织、消息编写、打标签、变更日志 |
-| `astra-vcs-assist` → `references/git/sync/` | 双远程推送、安全强制推送、git bundle |
+| `astra-vcs-assist` → `references/gpg/key-lifecycle/SKILL.md` | GPG 密钥检查、导入、生成；VCS 签名配置；免交互密码缓存 |
+| `astra-vcs-assist` → `references/git/init/SKILL.md` | README、LICENSE 分析、gitconfig、GPG 绑定、远程配置、首次提交 |
+| `astra-vcs-assist` → `references/git/dev/SKILL.md` | 开发中的分支、暂存、提交、贮藏管理 |
+| `astra-vcs-assist` → `references/git/release/SKILL.md` | 提交重新组织、消息编写、打标签、变更日志 |
+| `astra-vcs-assist` → `references/git/sync/SKILL.md` | 双远程推送、安全强制推送、git bundle |
 
 ## 快速开始
 

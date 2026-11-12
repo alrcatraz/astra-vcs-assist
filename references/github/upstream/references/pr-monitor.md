@@ -47,7 +47,7 @@ if (
 Verify after editing: run the script twice back-to-back — both runs must be
 silent (stdout empty) when nothing changed. A lone `Mergeable:` alert on a PR
 with no new comment/review IDs is still suspect; briefers should read it as a
-possible blip (see `pr-briefing-workflow.md` §1a).
+possible blip (see `pr-briefing-workflow.md` ).
 
 **The `mergeable_state` transition needs the SAME kind of guard — and must reject
 the sentinel value.** The `mergeable` guard above is two-sided against `None`, but
@@ -123,7 +123,7 @@ to the monitor.
   substantively revised review is silently missed.
 
 Both are why the briefing step must enumerate all current items rather than
-brief from the pushed text — see `pr-briefing-workflow.md` §1. When
+brief from the pushed text — see `pr-briefing-workflow.md` When
 you add a PR whose comment history is not yet baseline'd, read the existing
 thread yourself and tell the user what is already there, instead of trusting
 that the first quiet tick means "nothing to see".

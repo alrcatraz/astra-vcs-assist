@@ -47,12 +47,11 @@ and other non-systemd distros have no such interface — and a plain
 non-systemd systems, so the connection succeeds and `SetLinkDNS` fails with
 UnknownMethod/UnknownObject, silently no-oping DNS config.
 
-Handle it as a detection chain with a file-based fallback (Tailscale's design —
-see `tailscale-linux-dns-design.md`):
+Handle it as a detection chain with a file-based fallback:
 
 1. Detect the resolver in charge: read `/etc/resolv.conf` header + check it
    points at 127.0.0.53 (systemd-resolved stub) or `resolve` in
-   `/etc/nsswitch.conf`. Header alone is not proof (tailscale issue #2136).
+   `/etc/nsswitch.conf`. Header alone is not proof.
 2. systemd-resolved in charge → D-Bus SetLinkDNS/SetLinkDomains (keep the
    round-1 implementation; supports per-domain routing).
 3. Otherwise → direct mode: back up `/etc/resolv.conf` (rename to

@@ -378,7 +378,7 @@ incidentally via a wildcard socket). Prove the outcome from the OS view — `ss 
 count the listeners and note `[::]` versus a separate v4 row — never from "the unit
 is `active`". Then offer the three real options: land the patch on the deployed tree
 (which must follow the live-host rules in `upgrade-deployed-instance-with-patches.md`
-§7, including never restarting the unit that hosts your own session), change the unit
+, including never restarting the unit that hosts your own session), change the unit
 to a form the current tree honours and demote the PR to a pure upstream contribution,
 or record the dependency and leave it be.
 

@@ -1,6 +1,6 @@
 # Git Bundle Reference
 
-> Companion reference for `astra-vcs-assist` → `references/git/sync/` sub-skill.
+> Companion reference for `astra-vcs-assist` → `references/git/sync/SKILL.md` sub-skill.
 > Covers git bundle creation, transfer, and application for
 > cross-machine synchronisation when network transport is unavailable.
 

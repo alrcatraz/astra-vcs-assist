@@ -18,7 +18,7 @@ metadata:
 Load when commits are unsigned and must be signed, when a rewrite has to
 preserve authorship, or when the question is which author or account a commit
 belongs to. This covers the REWRITE and the PROOF. For key creation, import,
-passphrase caching and `gpg failed to sign`, load `astra-vcs-assist` → `references/gpg/key-lifecycle/`.
+passphrase caching and `gpg failed to sign`, load `astra-vcs-assist` → `references/gpg/key-lifecycle/SKILL.md`.
 
 ## Order of operations
 

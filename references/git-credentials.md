@@ -1,6 +1,6 @@
 # Git Credential Troubleshooting
 
-*This reference covers GPG-locked credential failure modes, KeePassXC fallback, and Gitea API token auth. For standard credential strategies (SSH, pass+GPG, one-shot), see `git-sync.md` §5.*
+*This reference covers GPG-locked credential failure modes, KeePassXC fallback, and Gitea API token auth. For standard credential strategies (SSH, pass+GPG, one-shot), see `references/git/sync/SKILL.md`.*
 
 ## Detection
 
@@ -11,6 +11,24 @@
 | Agent cache | `gpg-connect-agent 'KEYINFO --list' /by | grep -c "1 1"` | Returns `0` |
 
 Fix: Ask user to cache passphrase once (`gpg -d <file> > /dev/null`), or use `--pinentry-mode loopback`.
+
+Agent self-service (no user round-trip) when the signing key's passphrase lives in the
+Hermes agent env file (`~/.hermes/.env`, key `GPG_Key_Alrcatraz` for the fleet identity):
+
+```bash
+F=$(mktemp); chmod 600 $F; W=$(mktemp); chmod 700 $W
+grep '^GPG_Key_Alrcatraz=' ~/.hermes/.env | cut -d= -f2- > $F
+printf '#!/bin/sh\nexec /usr/bin/gpg --pinentry-mode loopback --batch --yes --passphrase-file %s "$@"\n' "$F" > $W
+git -c gpg.program=$W commit -m "…"; RC=$?
+shred -u $F; rm -f $W
+```
+
+Background: fleet commits sign through repo-local `gpg.program`
+(`~/.local/bin/gpg-loopback` = `/usr/bin/gpg --pinentry-mode loopback`), which relies
+on the gpg-agent passphrase cache. The cache TTL expires inside long agent sessions,
+and loopback with no supplied passphrase hangs (`gpg: Sorry, we are in batchmode`) —
+the symptom is `git commit` timing out while `hermes --version` style commands are fine.
+The env-file route keeps the commit unattended; still tell the user it was used.
 
 ### Failure 2: GnuPG 2.5+ keyboxd failure
 

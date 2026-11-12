@@ -21,7 +21,7 @@ agent context for the repo; keep it current with `references/tower-model.md`.
 
 ## 2. Trust-domain layering (tower model, see references/tower-model.md)
 
-- Remote level declarations (tower-model §1.1 ladder):
+- Remote level declarations (tower-model ladder):
   - `gitea : L1` — private authority: the full tower, with ADAPT values left
     concrete because a fleet agent pulls this repo and fills in only its own
     machine's differences (the instance facts are `allowlist`ed, not neutralised).

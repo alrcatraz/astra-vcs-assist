@@ -98,14 +98,14 @@ Below is a summary for quick reference:
 | Pre-commit review pipeline | `skill_view(name='astra-vcs-assist', file_path='references/git/review/SKILL.md')` |
 | Push, sync, transfer (dual remote, force push, bundle) | `skill_view(name='astra-vcs-assist', file_path='references/git/sync/SKILL.md')` |
 | This repo's version scheme + dual-branch release | `skill_view(name='astra-vcs-assist', file_path='references/versioning/layers/SKILL.md')` |
-| Seeding an independent repo from an upstream (orphan root, rename) | `astra-vcs-assist` → `references/git/seed-from-upstream/` |
+| Seeding an independent repo from an upstream (orphan root, rename) | `astra-vcs-assist` → `references/git/seed-from-upstream/SKILL.md` |
 | Remote auth fails / credential helper prompts / `could not read Username` | `skill_view(name='astra-vcs-assist', file_path='references/git/remote-auth/SKILL.md')` |
-| Migrating Gitea → Forgejo in place (schema version, runners) | `astra-vcs-assist` → `references/forge/migration/` |
+| Migrating Gitea → Forgejo in place (schema version, runners) | `astra-vcs-assist` → `references/forge/migration/SKILL.md` |
 | GitHub PAT handling (mint, scope, rotate, revoke) | `skill_view(name='astra-vcs-assist', file_path='references/github/pat/SKILL.md')` |
 | Dependabot / auto-merge / PR-title gates on GitHub | `skill_view(name='astra-vcs-assist', file_path='references/github/dependabot/SKILL.md')` |
 | Carry a fix upstream (fork, purity rules, PR body, CI parity) | `astra-vcs-assist` → `references/github/upstream/` |
 | Take a GitHub issue through to a verified PR | `skill_view(name='astra-vcs-assist', file_path='references/github/issue-to-pr/SKILL.md')` |
-| Rewriting published history (filter-repo, term purge, propagation) | `astra-vcs-assist` → `references/history/reorg/` |
+| Rewriting published history (filter-repo, term purge, propagation) | `astra-vcs-assist` → `references/history/reorg/SKILL.md` |
 | Commit signing or authorship looks wrong before a release | `skill_view(name='astra-vcs-assist', file_path='references/history/signing/SKILL.md')` |
 | Fork/cache/platform naming terms | `references/fleet-naming.md` (in this skill) |
 
@@ -129,7 +129,7 @@ Mercurial changesets, or email. This domain covers the full lifecycle:
 
 | Sub-skill | Covers |
 |:----------|:-------|
-| `astra-vcs-assist` → `references/gpg/key-lifecycle/` | Key check/import/generate, VCS signing config, headless passphrase caching, cross-machine key strategy, rotation |
+| `astra-vcs-assist` → `references/gpg/key-lifecycle/SKILL.md` | Key check/import/generate, VCS signing config, headless passphrase caching, cross-machine key strategy, rotation |
 
 ### Git
 
@@ -137,13 +137,13 @@ Git is the first supported VCS. Its sub-skills cover the full workflow:
 
 | Phase | Sub-skill | Covers |
 |:------|:----------|:-------|
-| Setup | `astra-vcs-assist` → `references/git/init/` | README, LICENSE, .gitignore, gitconfig, GPG binding |
-| Daily | `astra-vcs-assist` → `references/git/dev/` | Branch, stage, commit, stash, merge/rebase during development |
+| Setup | `astra-vcs-assist` → `references/git/init/SKILL.md` | README, LICENSE, .gitignore, gitconfig, GPG binding |
+| Daily | `astra-vcs-assist` → `references/git/dev/SKILL.md` | Branch, stage, commit, stash, merge/rebase during development |
 | Fork | `astra-vcs-assist` → `references/git/fork/` | Dual-remote fork setup, upstream adaptation, licensing, PR back |
 | Review | `astra-vcs-assist` → `references/git/review/` | Pre-commit diff review pipeline, static checks |
-| Release | `astra-vcs-assist` → `references/git/release/` | Commit reorganisation, message writing, tagging, changelog |
-| Sync | `astra-vcs-assist` → `references/git/sync/` | Push, force push, dual remote, git bundle |
-| Meta | `astra-vcs-assist` → `references/versioning/layers/` | Three-layer SemVer scheme + this repo's dual-branch release flow |
+| Release | `astra-vcs-assist` → `references/git/release/SKILL.md` | Commit reorganisation, message writing, tagging, changelog |
+| Sync | `astra-vcs-assist` → `references/git/sync/SKILL.md` | Push, force push, dual remote, git bundle |
+| Meta | `astra-vcs-assist` → `references/versioning/layers/SKILL.md` | Three-layer SemVer scheme + this repo's dual-branch release flow |
 
 ## SOUL Alignment
 
@@ -151,7 +151,7 @@ Git is the first supported VCS. Its sub-skills cover the full workflow:
 
 ## Pitfalls
 
-1. **Resist scope creep.** The hub's job is routing, not implementing GPG or Git logic. If you find yourself writing signing procedures inside the hub SKILL.md, that content belongs in `astra-vcs-assist` → `references/gpg/key-lifecycle/`.
+1. **Resist scope creep.** The hub's job is routing, not implementing GPG or Git logic. If you find yourself writing signing procedures inside the hub SKILL.md, that content belongs in `astra-vcs-assist` → `references/gpg/key-lifecycle/SKILL.md`.
 
 2. **Sub-skills inside the repo, not separate repos.** Unlike some Astra projects, sub-skills are stored inside this repo (under `gpg/` or `git/skills/`) and symlinked out.
 
@@ -169,7 +169,7 @@ Git is the first supported VCS. Its sub-skills cover the full workflow:
    "create it first", never as "try the push anyway"; confirm a new repo with `git ls-remote`
    before pushing content into it.
 
-7. **`automated-gpg-commit-push` is the predecessor.** That skill (devops category) contains machine-specific credential tricks. Its generic GPG knowledge has been absorbed into `astra-vcs-assist` → `references/gpg/key-lifecycle/`. On that machine, load both — the old skill has machine-specific debugging notes.
+7. **`automated-gpg-commit-push` is the predecessor.** That skill (devops category) contains machine-specific credential tricks. Its generic GPG knowledge has been absorbed into `astra-vcs-assist` → `references/gpg/key-lifecycle/SKILL.md`. On that machine, load both — the old skill has machine-specific debugging notes.
 
 8. **Credentials in GPG, never in skill text.** Password decryption always goes through `gpg --pinentry-mode loopback` or `gpg-preset-passphrase`. Never hardcode.
 

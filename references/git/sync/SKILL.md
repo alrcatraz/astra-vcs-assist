@@ -79,10 +79,10 @@ Before pushing, determine the remote relationship:
 
 5. **Declare each remote's trust level — ask the user if not already known:**
    ```
-   <remote> : L<n>      # tower-model §1.1
+   <remote> : L<n>      # tower-model
    ```
    - **L0 authority** — full tower with real values; `AGENTS.local.md` MAY live here (dev copy).
-   - **L1 private** — the private trust tier: INFRA intact, ADAPT **left concrete** for the fleet (a pulled repo must work when an agent fills in only its own machine's values). `AGENTS.local.md` MAY live here with real values. (When a repo's ADAPT *is* neutralised at L1 instead, that is a content choice for that repo — see trust-level-verification.md §3's intent test — not a requirement of the level.)
+   - **L1 private** — the private trust tier: INFRA intact, ADAPT **left concrete** for the fleet (a pulled repo must work when an agent fills in only its own machine's values). `AGENTS.local.md` MAY live here with real values. (When a repo's ADAPT *is* neutralised at L1 instead, that is a content choice for that repo — see trust-level-verification.md 's intent test — not a requirement of the level.)
    - **L2 sanitised** — INFRA stripped; `AGENTS.local.md` must be absent or fully neutralised here — never real values.
    - **L3 public** — zero private identifiers; `AGENTS.local.md` must NOT be disclosed here.
    - **L3 public** — zero private identifiers; `AGENTS.local.md` must NOT be disclosed here.
@@ -130,7 +130,7 @@ git log --show-signature -1        # last commit is signed
 git diff --stat origin/main..      # scope of changes
 
 # Local-layer safety: AGENTS.local.md may reach ONLY <= L1 remotes.
-# (tower-model §1.1 trust levels — declare each remote's level first.)
+# (tower-model trust levels — declare each remote's level first.)
 REMOTE=<this push target>; LEVEL=L<0|1|2|3>
 # >=L2 (sanitised/public): must be ABSENT from that tree
 [ "$LEVEL" -ge 2 ] 2>/dev/null && git ls-tree -r --name-only "$REMOTE" | \
@@ -139,7 +139,7 @@ REMOTE=<this push target>; LEVEL=L<0|1|2|3>
 ```
 
 When the push target is **≥ L2**, treat `AGENTS.md` like code: it must pass
-the same leak check before it leaves (see git-release §7).
+the same leak check before it leaves (see git-release).
 
 ## 2. Dual Remote Push (Mirror to Two Remotes)
 
@@ -222,7 +222,7 @@ git rebase main
 # Push feature branch to your fork
 git push -u origin feat/my-feature
 
-# Open a PR to upstream (see git-release §8)
+# Open a PR to upstream (see git-release)
 ```
 
 **Dual push (fork + backup):**
@@ -369,7 +369,7 @@ ssh -T git@github.com
 
 ### GPG + pass (for headless environments)
 
-From `astra-vcs-assist` → `references/gpg/key-lifecycle/` — the two-path approach:
+From `astra-vcs-assist` → `references/gpg/key-lifecycle/SKILL.md` — the two-path approach:
 
 ```bash
 # Path A: gpg-preset-passphrase

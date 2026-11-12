@@ -1,6 +1,6 @@
 # Dual-Remote Push Reference
 
-> Companion reference for `astra-vcs-assist` → `references/git/sync/` sub-skill.
+> Companion reference for `astra-vcs-assist` → `references/git/sync/SKILL.md` sub-skill.
 > Covers multi-remote setup, push strategies, sync workflows, and Gitea-specific notes.
 
 ## Remote Naming Conventions
@@ -52,7 +52,7 @@ from the mirror too, keep separate remotes.
 
 ## Fork Workflow
 
-Fork sync workflow is now covered in `astra-vcs-assist` → `references/git/sync/` §2a (Fork Sync).
+Fork sync workflow is now covered in `astra-vcs-assist` → `references/git/sync/SKILL.md`.
 This reference covers the mirror/backup aspect only.
 
 ## Daily Workflow
@@ -95,7 +95,7 @@ git remote set-url gitea git@git.example.com:owner/repo.git
 # Then use it as the password:
 git remote set-url gitea https://username:${GITEA_TOKEN}@git.example.com/owner/repo.git
 
-# Or store in credential helper (see git-sync sub-skill §5)
+# Or store in credential helper (see the git-sync sub-skill)
 ```
 
 ### Push mirroring from Gitea itself

@@ -139,6 +139,36 @@ gpg --decrypt /path/to/encrypted-backup.gpg | gpg --import
 ssh user@remote "gpg --export-secret-keys --armor <key-id>" | gpg --import
 ```
 
+**Transfer the export as a file over ssh/scp, never as a pipe into a later
+step.** The `gpg --import` side needs the *whole* armored block, and a pipe
+whose consumer is itself inside a heredoc (`ssh host 'bash -s' <<EOS`) silently
+gets a truncated or empty stdin — the import then reports `0 keys imported` with
+no error, or imports a key that cannot sign. Write the export to a mode-600
+temp file, `scp` it, import, `rm` it. Verify with `--list-packets`, which
+distinguishes a real secret key from a public one:
+
+```bash
+gpg --list-packets /tmp/k.sec.asc | grep -c "secret key packet"   # must be 1
+```
+
+**A passphrase-protected key cannot sign through a pipe into stdin.** The
+passphrase is *also* read on fd 0, so `echo "$PW" | gpg ... --detach-sign`
+signs with an empty passphrase and fails — or, worse, the payload and the
+passphrase contend for the same stream. Feed it explicitly:
+
+```bash
+printf '%s' "$PW" > "$D/.pp"; chmod 600 "$D/.pp"
+gpg --batch --yes --pinentry-mode loopback --passphrase-file "$D/.pp" \
+    --local-user "$K" --detach-sign -o "$D/sig" "$D/payload.txt"
+rm -f "$D/.pp"          # never leave it on disk
+```
+
+`--pinentry-mode loopback` is required headless; without it the operation
+blocks forever waiting for a pinentry that does not exist, which looks like a
+hang rather than a missing credential. Use the *full fingerprint* for
+`--local-user`, not the 16-char key ID — the short form resolves ambiguously
+once two keys share a suffix.
+
 ### Trust the key after import
 
 ```bash
@@ -148,6 +178,20 @@ gpg --edit-key <key-id>
 > 5 (I trust ultimately)
 > quit
 ```
+
+**In batch mode there is no `edit-key` menu — feed ownertrust instead.** The
+fingerprints must be *complete*; `import-ownertrust` rejects a 16-char key ID
+with `error in '[stdin]': invalid fingerprint` (this is the non-interactive
+form of the trust step above, and it is what a scripted import needs):
+
+```bash
+printf '%s:6:\n' <full-fingerprint> <full-fingerprint> | gpg --batch --import-ownertrust
+gpg --list-secret-keys --keyid-format LONG   # uid must read [ultimate]
+```
+
+Leaving this out is the difference between a key that signs with a warning and
+one that is usable — and the `uid` line showing `[unknown]` after import is the
+tell that it was skipped.
 
 ### Import the public key to your Git hosting provider
 

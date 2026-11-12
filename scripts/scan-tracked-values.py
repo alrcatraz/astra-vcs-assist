@@ -18,12 +18,14 @@ import subprocess
 import sys
 
 PATTERNS = {
-    # ADAPT -- neutralised before INFRA is stripped (ladder order)
-    "forge": r"git01\.wrt\.astra-lab",
-    "path": r"/home/alrcatraz",
+    # Neutral placeholders. Each value is an instance fact, so this file ships with the
+    # pattern *classes* only: export the SCAN_* variables (or pass them in the environment)
+    # to make the scan specific to one fleet. An unset pattern matches nothing.
+    "forge": os.environ.get("SCAN_FORGE_HOST", r"(?!)"),
+    "path": os.environ.get("SCAN_HOME_PATH", r"(?!)"),
     "ip": r"\b192\.168\.\d+\.\d+\b|\b10\.\d+\.\d+\.\d+\b",
-    "personal": r"\+alrcatraz",
-    "machine": r"\b(HC\d+|SUSET(?:Learn)?\d+|HomeCentre\d*|DS\d+\w*|SL\d+|fedoratg|site17\w+)\b",
+    "personal": os.environ.get("SCAN_PERSONAL_VERSION", r"(?!)"),
+    "machine": os.environ.get("SCAN_MACHINE_NAMES", r"(?!)"),
 }
 INFRA_SEGMENTS = ("workflows/", ".gitea/", ".github/", "Dockerfile", "flake.nix")
 RX = re.compile("|".join("(?P<%s>%s)" % (k, v) for k, v in PATTERNS.items()))

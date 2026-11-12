@@ -1,6 +1,6 @@
 # Safe Force Push Reference
 
-> Companion reference for `astra-vcs-assist` → `references/git/sync/` sub-skill.
+> Companion reference for `astra-vcs-assist` → `references/git/sync/SKILL.md` sub-skill.
 > Covers scenarios where force push is acceptable, `--force-with-lease`
 > mechanics, recovery from accidental force push, and team notification
 > patterns.

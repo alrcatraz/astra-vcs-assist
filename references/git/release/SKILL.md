@@ -72,6 +72,11 @@ git rev-list --count main..HEAD
 git log --oneline main..HEAD | grep -E "^(wip|fixup|squash|WIP)"
 ```
 
+**Gate — the review is complete only when** the branch contains no `wip`/`fixup`/`squash`
+subject, every commit you intend to keep maps to one user-visible change, and the diff
+against `main` contains no file you cannot justify. A release cut from a branch that
+still carries a scratch commit ships that commit to history permanently.
+
 ## 2. Interactive Rebase (the Core Tool)
 
 Interactive rebase is the Swiss Army knife of commit cleanup.
@@ -148,6 +153,11 @@ Change to:
 pick a1b2c3d feat: add user login endpoint    ← moved up
 pick e4f5g6h fix: handle null token           ← moved down
 ```
+
+**Gate — the rebase is complete only when** `git status` is clean, the reflog or the
+`ORIG_HEAD` still names the pre-rebase tip (so the operation is reversible), and each
+resulting commit builds in isolation if you claim it does. A rebase that resolved a
+conflict by taking one side wholesale is a silent revert until something compiles it.
 
 ## 3. Splitting a Commit
 
@@ -290,6 +300,12 @@ git tag v1.0.0 <new-sha>
 git push --force origin v1.0.0
 ```
 
+**Gate — the version is correct only when** the number you chose is derivable from the
+changelog entries by SemVer (a breaking change bumps the major, a new feature the minor,
+a fix the patch), the tag is annotated or signed rather than lightweight, and the tag is
+not pushed until the commit it names is on `main`. A tag pushed ahead of `main` publishes
+an artefact nobody reviewed.
+
 ## 6. Changelog
 
 ### Manual changelog (recommended for small projects)
@@ -330,7 +346,7 @@ Follow [keepachangelog.com](https://keepachangelog.com) conventions:
 All notable changes to this project are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com).
 
-## [v1.2.0] — 2026-07-23
+## [v1.1.0] — 2026-06-15
 
 ### Added
 - New feature description (#42)
@@ -359,31 +375,11 @@ ready for the next release's additions.
 
 ---
 
-## PR Preparation Checklist
+## PR Preparation
 
-Before opening or merging a pull request, verify these items:
-
-1. **Stop after coding** — once development work is functionally complete,
-   STOP. Do NOT commit or PR without user confirmation.
-2. **User confirmation** — present the work to the user. Let them confirm
-   everything is correct.
-3. **User identity** — confirm whose name/email should be on the commits.
-   Set per-repo git identity.
-4. **Commit only after approval** — organise commits only after explicit
-   user go-ahead.
-5. **Submit PR only after second approval** — wait for a second explicit
-   approval before opening a PR. No self-authorised submissions.
-6. **Review commit history** — squash intermediate corrections, split
-   logical concerns.
-7. **Update README** — must reflect the PR's changes before opening.
-8. **Reset local main if needed:** `git checkout main && git reset --hard <remote>/main`
-9. **No "Phase X" labels** in commit messages.
-10. **Private data audit** — check for device names, IPs, passwords in
-    committed files.
-11. **Run graphlint** — `graphlint query --warn-types unused_import,dead_code`
-    to catch dead code and unused imports before declaring done.
-
----
+Preparing, approving and opening the pull request belongs to the development flow —
+the checklist lives in `references/git/dev/SKILL.md`. The release-specific gate is the
+pre-release checklist below.
 
 ## 7. Pre-Release Verification Checklist
 
@@ -408,7 +404,7 @@ git diff main..HEAD --stat
 #    (see SemVer table above — is it PATCH, MINOR, or MAJOR?)
 
 # 6. Leak check the WHOLE projected tree before this release reaches a >=L2
-#    remote. (tower-model §1.1 trust levels.)
+#    remote. (tower-model trust levels.)
 #    AGENTS.md publishes like the code — grep it for secrets/topology.
 #    AGENTS.local.md must be absent from every >=L2 tree; <=L1 remotes
 #    may carry it.
@@ -420,7 +416,7 @@ REMOTE=<the remote being pushed to>; LEVEL=L<0|1|2|3>
 grep -nEi 'password|token|secret|internal|\.local/|10\.[0-9]+\.' AGENTS.md
 # 6c. the whole tree this release will carry — not just AGENTS.md:
 python3 scripts/scan-tracked-values.py        # walk the PROJECTED tree, not the source
-#   → For every hit, DO NOT replace the value blindly (see §6d).
+#   → For every hit, DO NOT replace the value blindly (see the note there).
 #   → No hits: proceed. Any hit = fix before tagging. (Always ask the user
 #     for each remote's trust level if not already declared.)
 # 6d. re-read each 6c hit in context and apply the attribution verdict —
@@ -536,7 +532,7 @@ curl -s -X POST \
 | Fork of someone else's project | Push feature branch → open PR to upstream | ❌ Skip |
 | Experimental / throwaway branch | Delete without merging | ❌ Skip |
 
-After merging or submitting the PR, proceed to `astra-vcs-assist` → `references/git/sync/`
+After merging or submitting the PR, proceed to `astra-vcs-assist` → `references/git/sync/SKILL.md`
 if you need to push to multiple remotes or transfer commits.
 
 ## Pitfalls

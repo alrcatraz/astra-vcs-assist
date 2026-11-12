@@ -116,7 +116,7 @@ has no disclosure boundary, and goes stale the moment topology changes.
 - **`AGENTS.local.md` (private layer)** — branch map, remote topology,
   multi-remote version rules, credential pointers. Disclosed only to remotes at
   ≤ L1; gitignore it when the repo has no ≤ L1 remote (see
-  `astra-vcs-assist` → `references/git/init/` for the decision tree and skeletons).
+  `astra-vcs-assist` → `references/git/init/SKILL.md` for the decision tree and skeletons).
 
 ```markdown
 ## This is a fork
